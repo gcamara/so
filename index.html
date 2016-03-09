@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="so">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistemas Operacionais - Gabriel Camara</title>
+
+    <!-- Scripts Importados -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+
+    <!-- Scripts Locais -->
+    <script src="js/main.js"></script>
+    <script src="js/directives.js"></script>
+    <script src="js/roundrobin.js"></script>
+    <script src="js/services.js"></script>
+    <!-- Controllers é o ultimo, pois os algoritmos tem que ser carregados antes de serem injetados -->
+    <script src="js/controllers.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+
+<div class="container" style="padding-bottom: 20px" ng-controller="ConfigController">
+    <div class="jumbotron" style="color: white; background-color: #323232; text-align: center">
+        <h2>Sistemas Operacionais</h2>
+    </div>
+    <form novalidate name="configuracoes" ng-submit="criarProcessadores()">
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="font-size: 12px">Configurações</div>
+            <div class="panel-body" style="margin-left: 10px">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="input-group form-group">
+                                <span class="input-group-addon" style="font-size: 10px">Processadores</span>
+                                <input ng-model="config.cores" class="form-control" style="height:24px">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group form-group">
+                                <span class="input-group-addon" style="font-size: 10px">Algoritmo</span>
+                                <select ng-model="config.algoritmo" class="form-control"
+                                        style="height: 24px; font-size: 10px">
+                                    <option value="1">Round Robin</option>
+                                    <option value="2">SJF</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fim row -->
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="input-group form-group">
+                                <span class="input-group-addon" style="font-size: 10px">Processos</span>
+                                <input ng-model="config.processos" class="form-control" style="height: 23px">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group form-group">
+                                <span class="input-group-addon" style="font-size: 10px">Quantum (s)</span>
+                                <input ng-model="config.quantum" class="form-control"
+                                       style="height: 23px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fim painel body-->
+        </div>
+        <!-- Fim painel de configuracao -->
+
+        <div class="row" style="margin-top:-10px; padding-bottom: 10px; margin-right: 0px">
+            <div class="col-md-6">
+                <input type="submit" value="Iniciar" class="btn btn-primary">
+                <a class="btn btn-danger" ng-click="parar()">Parar</a>
+            </div>
+        </div>
+
+        <div ng-show="config.processadores.length">
+            <div class="panel panel-primary">
+                <div class="panel-heading" style="font-size: 12px">
+                    Processadores
+                </div>
+                <div class="panel-body processadores">
+                    <div class="row">
+                        <processador ng-repeat="processador in config.processadores" id="{{processador.id}}"
+                                     estado="{{processador.estado}}" tempo="{{processador.tempo}}"
+                                     processo="{{processador.processo.processo}}"></processador>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Fim Formulario -->
+
+    <!-- Inicio do container generico -->
+    <tabela titulo="Processos"></tabela>
+    <!-- Fim container generico -->
+</div>
+</body>
+</html>

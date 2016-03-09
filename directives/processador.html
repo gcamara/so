@@ -1,0 +1,30 @@
+<div class="col-sm-3 col-md-2">
+    <div id="PROC_{{id}}" class='panel '
+         ng-class="{'panel-success':estado=='Parado', 'panel-danger':estado=='Executando'}">
+        <div class="panel-heading" style="font-size: 12px !important; text-align: center">
+            Processador {{id}}
+        </div>
+        <div style="margin-top: -10px">
+            <div class="panel-body">
+                <div class="row" style="font-size: 10px">
+                    <div class="col-md-12">
+                        <img class="center"
+                             src="https://cdn0.iconfinder.com/data/icons/30-hardware-line-icons/64/Processor-48.png">
+                    </div>
+                    <div class="col-md-12" style="margin-top: 10px">
+                        Estado: {{estado}}
+                    </div>
+
+                    <div class="col-md-12" ng-show="processo">
+                        Processo: {{ processo }}
+                    </div>
+
+                    <div class="col-md-12" ng-show="tempo">
+                        Tempo Restante: {{tempo}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

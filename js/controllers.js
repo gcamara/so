@@ -3,18 +3,21 @@
  */
 angular.module('so')
     .controller('TableController', function ($rootScope, $scope, $interval, AlgorithmExecuterService) {
-        //Utilizado para representar esse objeto controller
-        var ctrl = this;
+        //Nao acessivel pela view
+        var service;
 
-        $scope.aptos = []
-        $scope.headers = [ 'PID', 'Processo', 'Progresso', 'Estado', 'Prioridade', 'ETC(s)' ];
+        $scope.aptos = [[], [], [], []]
+        $scope.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Prioridade', 'ETC(s)'];
+        $scope.procs = [];
+        $scope.config;
+
 
         $scope.setWidth = function (row) {
             var width = row.progress + "%";
             return {width: width}
         };
 
-        $scope.stateClass = function(row, type) {
+        $scope.stateClass = function (row, type) {
             var clazz = "success";
             switch (row.state) {
                 case 'Aguardando':
@@ -25,52 +28,54 @@ angular.module('so')
                     break;
             }
 
-            return type+"-"+clazz;
+            return type + "-" + clazz;
         };
 
-        $scope.addProcess = function (processo) {
-            var row = {
-                pid: $scope.aptos.length,
-                processo: processo,
-                progress: 0,
-                state: 'Running'
-            };
-            $scope.aptos.push(row);
+        $scope.processos = function () {
+            return $scope.procs;
+        }
+
+        $scope.addProccess = function () {
+            service.criarProcesso($scope.processos());
         };
 
-        var criaProcessos = function (processos) {
+        $scope.filterNaoExecutando = function(processo) {
+            return processo.prioridade === 0 && processo.state !== 'Executando';
+        }
+
+        var criaProcessos = function (service, processos) {
+            $scope.processos().length = 0;
             $scope.aptos.length = 0;
             var i;
-            for (i = 0; i < parseInt(processos); i++) {
-                $scope.aptos.push({
-                    pid: i,
-                    processo: 'Processo ' + i,
-                    progress: 0,
-                    state: 'Executando',
-                    tempo: 0,
-                    tempoTotal: 10
-                });
-            }
 
+            for (i = 0; i < parseInt(processos); i++) {
+                $scope.addProccess();
+            }
         }
 
         $scope.$on('iniciar', function (events, args) {
-            console.log("Evento escutado..");
-            criaProcessos(args.processos);
-            var service = AlgorithmExecuterService.construirAlgoritmo('1');
-            service.executar(args, $scope.aptos);
+            $scope.config = args;
+
+            service = AlgorithmExecuterService.construirAlgoritmo('1');
+            service.configurar(args);
+            criaProcessos(service, args.processos);
+            $scope.aptos = service.aptos;
+
+            service.executar();
         });
 
         $scope.$on('parar', function (events, args) {
-            $scope.aptos = [];
+            $scope.processos().length = 0;
         });
-    }).controller('ConfigController', function ($rootScope, $scope) {
+    }).
+    controller('ConfigController', function ($rootScope, $scope) {
         $scope.config = {
             cores: 4,
             algoritmo: "1",
             quantum: 1,
             processos: 1,
-            processadores: []
+            processadores: [],
+            running: true
         };
 
         $scope.criarProcessadores = function () {
@@ -86,12 +91,14 @@ angular.module('so')
                 });
             }
 
+            $scope.config.running = true;
             $rootScope.$broadcast('iniciar', $scope.config);
         }
 
         $scope.parar = function () {
             console.log("Parado");
             $scope.config.processadores = [];
+            $scope.config.running = false;
             $rootScope.$broadcast('parar');
         }
     });

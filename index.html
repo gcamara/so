@@ -7,6 +7,7 @@
     <!-- Scripts Importados -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
@@ -19,7 +20,8 @@
     <script src="js/roundrobin.js"></script>
     <script src="js/services.js"></script>
     <!-- Controllers é o ultimo, pois os algoritmos tem que ser carregados antes de serem injetados -->
-    <script src="js/controllers.js"></script>
+    <script src="js/controllers/controllers.js"></script>
+    <script src="js/controllers/table-controller.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -30,10 +32,10 @@
 </head>
 <body>
 
+<div class="jumbotron" style="margin-top: 10px; color: white; background-color: #323232; text-align: center">
+    <h2>Sistemas Operacionais</h2>
+</div>
 <div class="container" style="padding-bottom: 20px" ng-controller="ConfigController">
-    <div class="jumbotron" style="color: white; background-color: #323232; text-align: center">
-        <h2>Sistemas Operacionais</h2>
-    </div>
     <form novalidate name="configuracoes" ng-submit="criarProcessadores()">
         <div class="panel panel-primary">
             <div class="panel-heading" style="font-size: 12px">Configurações</div>

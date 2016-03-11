@@ -1,7 +1,7 @@
 /**
  * Created by Gabriel on 05/03/2016.
  */
-var so = angular.module('so', ['minhasDiretivas', 'ngRoute'])
+var so = angular.module('so', ['minhasDiretivas', 'ngRoute', 'ngAnimate'])
 
 
 var container = {

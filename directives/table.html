@@ -1,8 +1,13 @@
-<div ng-show="processos().length">
+<div class="animate-show" ng-hide="!processos().length">
 
     <div class="panel panel-primary">
-        <div class="panel-heading" style="font-size: 12px">Aptos</div>
-        <div class="panel-body">
+        <div class="panel-heading" style="font-size: 12px">
+            Aptos
+            <button id="aptosBtn" style="margin-top: 0px"
+                    class="btn btn-default pull-right glyphicon glyphicon-chevron-down btn-xs"
+                    data-toggle="collapse" ng-click="collapseAptos()" data-target="#pbody"></button>
+        </div>
+        <div id="pbody" class="collapse panel-body">
             <div class="row">
                 <fila-aptos prioridade="0"></fila-aptos>
                 <fila-aptos prioridade="1"></fila-aptos>

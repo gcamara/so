@@ -13,15 +13,7 @@ angular.module('so')
     $scope.config;
 
     $scope.collapseAptos = function() {
-        var btn = $("#aptosBtn");
-        var clzz = 'glyphicon-chevron-down'
-        if (btn.hasClass(clzz)) {
-            btn.removeClass(clzz);
-            btn.addClass('glyphicon-chevron-up');
-        } else {
-            btn.addClass(clzz);
-            btn.removeClass('glyphicon-chevron-up');
-        }
+        $rootScope.$broadcast('collapseAptos');
     }
 
     $scope.setWidth = function (row) {
@@ -30,14 +22,16 @@ angular.module('so')
     };
 
     $scope.stateClass = function (row, type) {
-        var clazz = "success";
+        var clazz = '';
         switch (row.state) {
             case 'Aguardando':
-                clazz = "warning";
+                clazz = 'warning';
                 break;
             case 'Executando':
-                clazz = "info active";
+                clazz = 'info active';
                 break;
+            default:
+                clazz = 'success';
         }
 
         return type + "-" + clazz;

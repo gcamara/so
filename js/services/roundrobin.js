@@ -81,11 +81,12 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
                                 apto.state = 'Concluido';
                             }
                         }
+                        $rootScope.$broadcast('aptoMudou', {'apto': apto});
                     }, 1000);
                 }
             } //Caso nao haja processador, devolver o apto para a lista
             else {
-                roundrobin.aptos[apto.prioridade].push(apto);
+                roundrobin.aptos[apto.prioridade].splice(0,0,apto);
             }
         }
     };
@@ -133,8 +134,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
 
         roundrobin.aptos[prioridade].push(proc);
         scopeProccesses.push(proc);
-
-        return proc;
+        $rootScope.$broadcast('aptoMudou', {'apto':proc, 'lastState': '-success'});
     };
 
     return roundrobin;

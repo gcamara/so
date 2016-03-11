@@ -7,6 +7,7 @@ angular.module('so')
         var service;
 
         $scope.aptos = [[], [], [], []]
+        $scope.filaAptos;
         $scope.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Prioridade', 'ETC(s)'];
         $scope.procs = [];
         $scope.config;
@@ -35,12 +36,13 @@ angular.module('so')
             return $scope.procs;
         }
 
-        $scope.addProccess = function () {
-            service.criarProcesso($scope.processos());
+        $scope.addProccess = function (active) {
+            service.criarProcesso($scope.processos(), active);
         };
 
-        $scope.filterNaoExecutando = function(processo) {
-            return processo.prioridade === 0 && processo.state !== 'Executando';
+        $scope.filterNaoExecutando = function (processo, prioridade) {
+            var estadosNaoPermitidos = ['Executando', 'Concluido'];
+            return processo.prioridade === parseInt(prioridade) && estadosNaoPermitidos.indexOf(processo.state) < 0;
         }
 
         var criaProcessos = function (service, processos) {
@@ -49,19 +51,26 @@ angular.module('so')
             var i;
 
             for (i = 0; i < parseInt(processos); i++) {
-                $scope.addProccess();
+                $scope.addProccess(false);
             }
         }
 
         $scope.$on('iniciar', function (events, args) {
             $scope.config = args;
 
-            service = AlgorithmExecuterService.construirAlgoritmo('1');
-            service.configurar(args);
-            criaProcessos(service, args.processos);
-            $scope.aptos = service.aptos;
+            service = AlgorithmExecuterService.construirAlgoritmo(args.algoritmo);
 
-            service.executar();
+            if (service) {
+                service.configurar(args);
+                criaProcessos(service, args.processos);
+                $scope.aptos = service.aptos;
+                $scope.filaAptos = service.availableAptos;
+
+                service.executar();
+            } else {
+                alert('Algoritmo nao implementado');
+                args.processadores = [];
+            }
         });
 
         $scope.$on('parar', function (events, args) {
@@ -69,6 +78,7 @@ angular.module('so')
         });
     }).
     controller('ConfigController', function ($rootScope, $scope) {
+
         $scope.config = {
             cores: 4,
             algoritmo: "1",
@@ -77,6 +87,33 @@ angular.module('so')
             processadores: [],
             running: true
         };
+
+        //Observa a quantidade de cores que deve estar num intervalo de 1 a 64
+        $scope.$watch(
+            function () {
+                return $scope.config.cores
+            },
+            function (oldValue, newValue) {
+                if (parseInt(oldValue) < 1) {
+                    $scope.config.cores = 1;
+                } else if (parseInt(oldValue) > 64) {
+                    $scope.config.cores = 64;
+                }
+            });
+
+        //Observa o quantum, que deve estar num intervalo de 2 a 20s
+        $scope.$watch(
+          function() {
+              return $scope.config.quantum
+          },
+            function (oldValue, newValue) {
+                if (parseInt(oldValue) < 2) {
+                    $scope.config.quantum = 2;
+                } else if (parseInt(oldValue) > 20) {
+                    $scope.config.quantum = 20;
+                }
+            }
+        );
 
         $scope.criarProcessadores = function () {
             console.log("Criando processadores...");

@@ -15,22 +15,9 @@ angular.module('minhasDiretivas', [])
             titulo: '@'
         };
 
+        ddo.replace = true;
         ddo.templateUrl = 'directives/table.html';
         ddo.controller = "TableController";
-
-        /*Ao linkar o elemento, sabe-se que, caso haja algum transcluded
-         esse elemento transcluded tem um escopo isolado do restante da diretiva.
-         Assim, nao se pode acessar os metodos do controlador da diretiva.
-         Para que isso fosse feito, o elemento adicionado dentro do escopo de transclude eh removido
-         e adicionado um clone em seu lugar, porem esse clone tera um novo escopo, ou seja, o da diretiva.
-         */
-        //ddo.link = function (scope, element, attrs, ctrl, transclude) {
-        //    transclude(scope, function (clone, scope) {
-        //        var transcludedOutOfScope = element[0].childNodes[0];
-        //        transcludedOutOfScope.removeChild(transcludedOutOfScope.childNodes[3]);
-        //        element.append(clone);
-        //    });
-        //};
 
         return ddo;
     })
@@ -53,4 +40,24 @@ angular.module('minhasDiretivas', [])
 
         ddo.templateUrl = 'directives/processador.html';
         return ddo;
-    });
+    })
+    .directive("filaAptos", function () {
+        return {
+            scope: {
+                prioridade: '@'
+            },
+            replace: true,
+            require: '^tabela',
+            templateUrl: 'directives/fila-aptos.html',
+            link: function (scope, element, attrs, controller) {
+
+                scope.processos = function () {
+                    return scope.$parent.processos();
+                }
+
+                scope.filterNaoExecutando = function (processo) {
+                    return scope.$parent.filterNaoExecutando(processo, scope.prioridade);
+                }
+            }
+        }
+    })

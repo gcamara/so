@@ -3,9 +3,12 @@
     <div class="panel panel-primary">
         <div class="panel-heading" style="font-size: 12px">Aptos</div>
         <div class="panel-body">
-            <span>Aptos[0]:</span>
-            <span ng-repeat="apto in processos() | filter: filterNaoExecutando">{{apto.processo}} - {{apto.state}}</span>
-            <br/>
+            <div class="row">
+                <fila-aptos prioridade="0"></fila-aptos>
+                <fila-aptos prioridade="1"></fila-aptos>
+                <fila-aptos prioridade="2"></fila-aptos>
+                <fila-aptos prioridade="3"></fila-aptos>
+            </div>
         </div>
     </div>
 
@@ -19,7 +22,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="row in processos()">
+                <tr ng-repeat="row in processos()" ng-class="{ 'active':row.active }">
                     <td>{{row.pid}}</td>
                     <td>{{row.processo}}</td>
                     <td>
@@ -42,5 +45,5 @@
             </table>
         </div>
     </div>
-    <a class="btn btn-primary" style="margin-top: -10px; margin-right: 0px" ng-click="addProccess()">Adicionar</a>
+    <a class="btn btn-primary" style="margin-top: -10px; margin-right: 0px" ng-click="addProccess(true)">Adicionar</a>
 </div>

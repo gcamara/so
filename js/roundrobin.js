@@ -114,7 +114,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
     };
 
     // Cria processo especifico para o Round Robin
-    roundrobin.criarProcesso = function (scopeProccesses) {
+    roundrobin.criarProcesso = function (scopeProccesses, active) {
         var prioridade = container.random(0, 3);
 
         var pid = scopeProccesses.length;
@@ -122,15 +122,18 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
             pid: pid,
             processo: "Processo " + pid,
             progress: 0,
-            state: 'Executando',
+            state: 'Pronto',
             prioridade: prioridade,
             tempo: 0,
             tempoTotal: container.random(4, 20)
         }
+        if (active) {
+            proc.active = true;
+        }
 
         roundrobin.aptos[prioridade].push(proc);
         scopeProccesses.push(proc);
-        console.log("Adicionado processo " + proc.pid + " - " + roundrobin.aptos[prioridade].indexOf(proc));
+
         return proc;
     };
 

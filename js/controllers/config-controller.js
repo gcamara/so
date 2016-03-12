@@ -2,16 +2,9 @@
  * Created by Gabriel on 05/03/2016.
  */
 angular.module('so')
-    .controller('ConfigController', function ($rootScope, $scope) {
+    .controller('ConfigController', function ($rootScope, $scope, CommonFunctionsService) {
 
-        $scope.config = {
-            cores: 4,
-            algoritmo: "1",
-            quantum: 1,
-            processos: 1,
-            processadores: [],
-            running: true
-        };
+        $scope.config = CommonFunctionsService.config;
 
         //Observa a quantidade de cores que deve estar num intervalo de 1 a 64
         $scope.$watch(
@@ -47,8 +40,8 @@ angular.module('so')
                 $scope.config.processadores.push({
                     id: i,
                     estado: 'Parado',
-                    processo: {},
-                    tempo: parseInt($scope.config.quantum)
+                    processo: undefined,
+                    tempo: 0
                 });
             }
 

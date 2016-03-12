@@ -5,14 +5,12 @@
     <title>Sistemas Operacionais - Gabriel Camara</title>
 
     <!-- Scripts Importados -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.min.js"></script>
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-            crossorigin="anonymous"></script>
+    <script src="js/angular/angular.min.js"></script>
+    <script src="js/angular/angular-route.min.js"></script>
+    <script src="js/angular/angular-animate.min.js"></script>
+    <script src="js/jquery/jquery-2.2.1.min.js"></script>
+    <script src="js/jquery/jquery-ui.min.js"></script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
 
     <!-- Scripts Locais -->
     <script src="js/main.js"></script>
@@ -24,9 +22,8 @@
     <script src="js/controllers/table-controller.js"></script>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
 
 </head>
@@ -108,9 +105,8 @@
                 </div>
                 <div class="panel-body processadores">
                     <div class="row">
-                        <processador ng-repeat="processador in config.processadores" id="{{processador.id}}"
-                                     estado="{{processador.estado}}" tempo="{{processador.tempo}}"
-                                     processo="{{processador.processo.processo}}"></processador>
+                        <processador ng-repeat="processador in config.processadores"
+                                     processador="processador"></processador>
                     </div>
                 </div>
             </div>

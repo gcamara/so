@@ -31,10 +31,7 @@
                     <td>{{row.pid}}</td>
                     <td>{{row.processo}}</td>
                     <td>
-                        <div class="progress">
-                            <div state-element apto="row" tipo="progress-bar" class="progress-bar progress-bar-info progress-bar-striped" style="font-size: 10px" ng-style="setWidth(row)">                                <span style="margin-top: -5px">{{row.progress}}%</span>
-                            </div>
-                        </div>
+                        <progress-process row="row"></progress-process>
                     </td>
                     <td>
                         <div style="margin-top: -5px">

@@ -1,8 +1,8 @@
 <div class="col-sm-3 col-md-2">
-    <div id="PROC_{{id}}" class='panel '
-         ng-class="{'panel-success':estado=='Parado', 'panel-danger':estado=='Executando'}">
+    <div class='panel '
+         ng-class="{'panel-success':processador.estado=='Parado', 'panel-danger':processador.estado=='Executando'}">
         <div class="panel-heading" style="font-size: 12px !important; text-align: center">
-            Processador {{id}}
+            Processador {{processador.id}}
         </div>
         <div style="margin-top: -10px">
             <div class="panel-body">
@@ -12,19 +12,22 @@
                              src="resources/cpu.png">
                     </div>
                     <div class="col-md-12" style="margin-top: 10px">
-                        Estado: {{estado}}
+                        Estado: {{processador.estado}}
                     </div>
 
-                    <div class="col-md-12" ng-show="processo">
-                        Processo: {{ processo }}
+                    <div class="col-md-12">
+                        Tempo Restante: {{processador.tempo}}
                     </div>
 
-                    <div class="col-md-12" ng-show="tempo">
-                        Tempo Restante: {{tempo}}
+                    <div class="col-md-12" ng-show="processador.processo">
+                        Processo: {{ processador.processo.processo }}
+                    </div>
+
+                    <div class="col-md-12" style="margin-top: 5px; margin-bottom: -20px">
+                        <progress-process row="processador.processo"></progress-process>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>

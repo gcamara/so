@@ -16,26 +16,6 @@ angular.module('so')
         $rootScope.$broadcast('collapseAptos');
     }
 
-    $scope.setWidth = function (row) {
-        var width = row.progress + "%";
-        return {width: width}
-    };
-
-    $scope.stateClass = function (row, type) {
-        var clazz = '';
-        switch (row.state) {
-            case 'Aguardando':
-                clazz = 'warning';
-                break;
-            case 'Executando':
-                clazz = 'info active';
-                break;
-            default:
-                clazz = 'success';
-        }
-
-        return type + "-" + clazz;
-    };
 
     $scope.processos = function () {
         return $scope.procs;

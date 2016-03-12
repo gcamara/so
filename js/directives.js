@@ -30,16 +30,14 @@ angular.module('minhasDiretivas', [])
         };
     })
     .directive('processador', function () {
-        var ddo = {};
-        ddo.scope = {
-            id: '@',
-            estado: '@',
-            processo: '@',
-            tempo: '@'
-        };
-
-        ddo.templateUrl = 'directives/processador.html';
-        return ddo;
+        return {
+            restrict: 'E',
+            replace: true,
+            scope:{
+                processador: '='
+            },
+            templateUrl: 'directives/processador.html'
+        }
     })
     .directive("filaAptos", function () {
         return {
@@ -80,7 +78,7 @@ angular.module('minhasDiretivas', [])
             }
         }
     })
-    .directive("stateElement", function ($rootScope) {
+    .directive("stateElement", function ($rootScope, CommonFunctionsService) {
         return {
             restrict: 'A',
             replace: true,
@@ -89,19 +87,36 @@ angular.module('minhasDiretivas', [])
                 tipo: '@',
                 ultimoTipo: '@'
             },
-            require: '^tabela',
             link: function (scope, element) {
                 $rootScope.$on('aptoMudou', function (event, args) {
                     if (args.apto == scope.apto) {
                         if (!scope.ultimoTipo) {
-                            scope.ultimoTipo = scope.tipo+args.lastState;
+                            scope.ultimoTipo = scope.tipo + args.lastState;
                         }
                         element.removeClass(scope.ultimoTipo);
-                        var clzz = scope.$parent.stateClass(scope.apto, scope.tipo);
+                        var clzz = CommonFunctionsService.stateClass(scope.apto, scope.tipo);
                         scope.ultimoTipo = clzz;
                         element.addClass(clzz);
                     }
                 });
             }
         }
+    })
+    .directive("progressProcess", function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            scope: {
+                row: '='
+            },
+            link: function (scope) {
+                scope.setWidth = function () {
+                    if (scope.row) {
+                        var width = scope.row.progress + "%";
+                        return {width: width}
+                    }
+                }
+            },
+            templateUrl: 'directives/progress.html'
+        };
     });

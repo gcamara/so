@@ -2,11 +2,10 @@
  * Created by Gabriel on 09/03/2016.
  */
 
-so.factory('RoundRobinService', function ($interval, $rootScope) {
+so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctionsService) {
     var roundrobin = {};
 
     roundrobin.availableProcessors = [];
-    roundrobin.availableAptos = [[], [], [], []];
 
     var ultimaFila = 0;
 
@@ -16,7 +15,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
 
         if (roundrobin.aptos) {
             if (ultimaFila < 4) {
-                apto = roundrobin.aptos[ultimaFila].shift();
+                apto = roundrobin.aptos[ultimaFila][0];
                 ultimaFila += 1;
                 if (!apto && (roundrobin.aptos[0].length || roundrobin.aptos[1].length || roundrobin.aptos[2].length || roundrobin.aptos[3].length)) {
                     apto = buscarProximoApto();
@@ -30,16 +29,17 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
     }
 
     //Executa o processo
-    var execFunction = function (config) {
+    var execFunction = function (config, func) {
         var apto = buscarProximoApto();
 
         if (apto) {
             //Busca os objetos originais para que possam ser alterados na View
             var currentProcessor = roundrobin.availableProcessors.shift();
-            var quantum = roundrobin.quantum;
+            var quantum = CommonFunctionsService.config.quantum;
 
             //Caso hajam processadores disponiveis
             if (currentProcessor) {
+                var apto = roundrobin.aptos[apto.prioridade].shift();
                 var processador = config.processadores[currentProcessor.id];
 
                 var pct;
@@ -48,7 +48,8 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
                 processador.processo = apto;
 
                 // Quantum aleatorio de acordo com a prioridade
-                processador.tempo = parseInt(quantum) + apto.prioridade;
+                // Porem a fila 0 tem maior prioridade
+                processador.tempo = parseInt(quantum) + (3 - apto.prioridade);
 
                 if (!processador.decreaseTime) {
                     processador.decreaseTime = $interval(function () {
@@ -86,15 +87,14 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
                 }
             } //Caso nao haja processador, devolver o apto para a lista
             else {
-                roundrobin.aptos[apto.prioridade].splice(0,0,apto);
+                $interval.cancel(func);
             }
-        }
+         }
     };
 
     //Configura o servico
     roundrobin.configurar = function (config, aptos) {
         roundrobin.aptos = [[], [], [], []];
-        roundrobin.quantum = config.quantum;
         roundrobin.config = config;
         roundrobin.availableProcessors = angular.copy(config.processadores);
 
@@ -110,7 +110,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope) {
                 return;
             }
 
-            execFunction(roundrobin.config, func)
+            execFunction(roundrobin.config, this)
         }, 500);
     };
 

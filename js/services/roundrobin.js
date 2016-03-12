@@ -41,18 +41,15 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
 
             //Caso hajam processadores disponiveis
             if (currentProcessor) {
-                console.log(APTO + "Tem processador para o proc: " + apto.processo);
                 var aptoCopy = apto;
                 apto = roundrobin.aptos[apto.prioridade].shift();
-                console.log(APTO + "Fez shift na fila, sao iguais? " + (apto === aptoCopy));
                 var processador = config.processadores[currentProcessor.id];
-                console.log(APTO + 'Configurou processador..');
+
                 var pct;
 
                 processador.estado = 'Executando';
                 processador.processo = apto;
-                console.log(APTO + 'Atribuiu processo ao processador');
-
+                
                 // Quantum aleatorio de acordo com a prioridade
                 // Porem a fila 0 tem maior prioridade
                 processador.tempo = parseInt(quantum) + (3 - apto.prioridade);
@@ -89,10 +86,6 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                     }
                     $rootScope.$broadcast('aptoMudou', {'apto': apto});
                 }, 1000);
-            } //Caso nao haja processador, devolver o apto para a lista
-            else {
-                console.log(APTO + 'Nao houve processadores para esse processo');
-                console.log(APTO + 'Apto esta na fila? ' + roundrobin.aptos[apto.prioridade].indexOf(apto));
             }
         }
 

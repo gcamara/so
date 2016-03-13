@@ -68,12 +68,13 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             var cmService = this.cmService;
 
             var interval = function (interval) {
-                if (processo.tempoTotal - processo.tempo > 0) {
+                var processador = this.processadores.shift();
+                if (!processador && processo.tempoTotal - processo.tempo > 0) {
                     processo.tempo += 1;
                 }
                 else {
                     $interval.cancel(interval);
-                    var processador = this.processadores.shift();
+
 
                     if (processador) {
                         processador = cmService.config.processadores[processador.id];

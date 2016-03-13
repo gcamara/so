@@ -11,7 +11,7 @@ angular.module('so')
         $scope.config = cmService.config;
         $scope.aptos = [];
 
-        $scope.processos = function() {
+        $scope.processos = function () {
             return cmService.processos;
         };
 
@@ -52,11 +52,11 @@ angular.module('so')
                 service.executar();
             } else {
                 alert('Algoritmo nao implementado');
-                args.processadores = [];
+                $scope.$parent.parar();
             }
         });
 
         $scope.$on('parar', function (events, args) {
             $scope.processos.length = 0;
-           });
+        });
     })

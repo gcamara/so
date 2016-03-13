@@ -54,4 +54,6 @@ angular.module('so')
             $scope.config.running = false;
             $rootScope.$broadcast('parar');
         }
+
+        $rootScope.$on('parar', $scope.parar());
     });

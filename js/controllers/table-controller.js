@@ -58,5 +58,5 @@ angular.module('so')
 
         $scope.$on('parar', function (events, args) {
             $scope.processos.length = 0;
-        });
+           });
     })

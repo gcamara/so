@@ -14,7 +14,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             if (this.tempos[tempo]) {
                 this.tempos[tempo] += 1;
                 if (this.tempos[tempo] > this.cmService.config.processadores.length) {
-                    tempo = buscarTempo();
+                    tempo = this.buscarTempo(tempo);
                 }
             } else {
                 this.tempos[tempo] = 1;
@@ -45,7 +45,6 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             }
 
             this.aptos.push(proc);
-            ;
 
             //Ordena os elementos
             this.cmService.insertionSort(this.aptos);

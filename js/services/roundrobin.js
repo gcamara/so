@@ -9,7 +9,10 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
 
     var ultimaFila = 0;
 
-    //Busca o proximo apto
+    /**
+     * Busca o proximo apto
+     * @returns {*}
+     */
     var buscarProximoApto = function () {
         var apto;
 
@@ -28,13 +31,15 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
         return apto;
     }
 
-    //Executa o processo
-    var execFunction = function (config, func) {
+    /**
+     * Executa o processo
+     * @param config
+     * @param func
+     */
+    var execFunction = function (config) {
         var apto = buscarProximoApto();
 
         if (apto) {
-            var APTO = '[' + apto.processo + ']: ';
-            console.log(APTO + "Apto " + apto.processo + " - Prioridade: " + apto.prioridade);
             //Busca os objetos originais para que possam ser alterados na View
             var currentProcessor = roundrobin.availableProcessors.shift();
             var quantum = CommonFunctionsService.config.quantum;
@@ -49,11 +54,14 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
 
                 processador.estado = 'Executando';
                 processador.processo = apto;
-                
+
                 // Quantum aleatorio de acordo com a prioridade
                 // Porem a fila 0 tem maior prioridade
                 processador.tempo = parseInt(quantum) + (3 - apto.prioridade);
 
+                if (processador.decreaseTime) {
+                    $interval.cancel(processador.decreaseTime);
+                }
                 processador.decreaseTime = $interval(function () {
                     if (processador.tempo && apto.tempo < apto.tempoTotal) {
                         if (processador.tempo - 1 > 0) {
@@ -68,11 +76,10 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                         pct = (apto.tempo / apto.tempoTotal) * 100;
                         apto.progress = Math.floor(pct);
                     } else {
-                        $interval.cancel(processador.decreaseTime);
                         processador.estado = 'Parado';
+                        $interval.cancel(processador.decreaseTime);
                         processador.processo = undefined;
                         roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
-                        $interval.cancel(processador.decreaseTime);
                         processador.tempo = 0;
 
                         //Caso ainda haja tempo, volta pra fila de aptos
@@ -91,17 +98,24 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
 
     };
 
-    //Configura o servico
-    roundrobin.configurar = function (config, aptos) {
+    /**
+     * Configura o servico
+     * @param config
+     * @param aptos
+     */
+    roundrobin.configurar = function () {
         roundrobin.aptos = [[], [], [], []];
-        roundrobin.config = config;
-        roundrobin.availableProcessors = angular.copy(config.processadores);
+        roundrobin.config = CommonFunctionsService.config;
+        roundrobin.availableProcessors = angular.copy(roundrobin.config.processadores);
 
         ultimaFila = 0;
     };
 
-    //Executa o processo todo
+    /**
+     * Executa o processo todo
+     */
     roundrobin.executar = function () {
+        roundrobin.criaProcessos();
         var func = $interval(function () {
             //Nao esta mais em execucao
             if (!roundrobin.config.running) {
@@ -109,15 +123,27 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                 return;
             }
 
-            execFunction(roundrobin.config, this)
+            execFunction(roundrobin.config);
         }, 500);
     };
 
-    // Cria processo especifico para o Round Robin
-    roundrobin.criarProcesso = function (scopeProccesses, active) {
+    roundrobin.criaProcessos = function () {
+        CommonFunctionsService.processos.length = 0;
+        roundrobin.aptos = [[],[],[],[]];
+        var i;
+
+        for (i = 0; i < parseInt(CommonFunctionsService.config.processos); i++) {
+            roundrobin.criarProcesso(false);
+        }
+    }
+
+    /**
+     *Cria processo especifico para o Round Robin
+     */
+    roundrobin.criarProcesso = function (active) {
         var prioridade = container.random(0, 3);
 
-        var pid = scopeProccesses.length;
+        var pid = CommonFunctionsService.processos.length;
         var proc = {
             pid: pid,
             processo: "Processo " + pid,
@@ -125,14 +151,12 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
             state: 'Pronto',
             prioridade: prioridade,
             tempo: 0,
-            tempoTotal: container.random(4, 20)
-        }
-        if (active) {
-            proc.active = true;
+            tempoTotal: container.random(4, 20),
+            active: active
         }
 
         roundrobin.aptos[prioridade].push(proc);
-        scopeProccesses.push(proc);
+        CommonFunctionsService.processos.push(proc);
         $rootScope.$broadcast('aptoMudou', {'apto': proc, 'lastState': '-success'});
     };
 

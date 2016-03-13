@@ -39,7 +39,7 @@ angular.module('minhasDiretivas', [])
             templateUrl: 'directives/processador.html'
         }
     })
-    .directive("filaAptos", function () {
+    .directive("filaAptos", function (CommonFunctionsService) {
         return {
             scope: {
                 prioridade: '@'
@@ -48,10 +48,7 @@ angular.module('minhasDiretivas', [])
             require: '^tabela',
             templateUrl: 'directives/fila-aptos.html',
             link: function (scope, element, attrs, controller) {
-
-                scope.processos = function () {
-                    return scope.$parent.processos();
-                }
+                scope.processos = CommonFunctionsService.processos;
 
                 scope.filterNaoExecutando = function (processo) {
                     return scope.$parent.filterNaoExecutando(processo, scope.prioridade);

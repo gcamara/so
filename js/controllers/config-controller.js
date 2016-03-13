@@ -46,7 +46,7 @@ angular.module('so')
             }
 
             $scope.config.running = true;
-            $rootScope.$broadcast('iniciar', $scope.config);
+            $rootScope.$broadcast('iniciar');
         }
 
         $scope.parar = function () {

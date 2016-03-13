@@ -1,4 +1,4 @@
-<div class="animate-show" ng-hide="!processos().length">
+<div class="animate-show" ng-hide="!config.running">
 
     <div class="panel panel-primary">
         <div class="panel-heading" style="font-size: 12px">
@@ -9,10 +9,23 @@
         </div>
         <div id="pbody" class="collapse panel-body">
             <div class="row">
-                <fila-aptos prioridade="0"></fila-aptos>
-                <fila-aptos prioridade="1"></fila-aptos>
-                <fila-aptos prioridade="2"></fila-aptos>
-                <fila-aptos prioridade="3"></fila-aptos>
+                <div ng-show="!showPrioridades()">
+                    <div class="col-md-12">
+                        <div class="row"
+                             style="overflow-y: auto; overflow-x: hidden; min-height: 20px; max-height: 100px;">
+                            <div class="col-md-2" style="padding-right: -10px"
+                                 ng-repeat="apto in aptos">
+                                <div class="label label-success">P{{apto.pid}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="showPrioridades()">
+                    <fila-aptos prioridade="0"></fila-aptos>
+                    <fila-aptos prioridade="1"></fila-aptos>
+                    <fila-aptos prioridade="2"></fila-aptos>
+                    <fila-aptos prioridade="3"></fila-aptos>
+                </div>
             </div>
         </div>
     </div>
@@ -38,7 +51,7 @@
                             <span class="label label-success" state-element apto="row" tipo="label">{{row.state}}</span>
                         </div>
                     </td>
-                    <td>{{row.prioridade}}</td>
+                    <td>{{checkColumn4(row)}}</td>
                     <td>{{row.tempo === 0 ? row.tempoTotal : row.tempoTotal - row.tempo}}s</td>
                 </tr>
                 </tbody>

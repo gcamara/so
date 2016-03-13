@@ -1,17 +1,10 @@
 {
-  "name": "alurapic",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.12.3",
-    "express": "^4.12.3",
-    "nedb": "^1.1.2"
+  "name"         : "SO",
+  "version"      : "0.0.0",
+  "description"  : "Trabalho de Sistemas Operacionais",
+  "main"         : "server.js",
+  "author"       : "Scotch",
+  "dependencies" : {
+    "express"    : "~4.7.2"
   }
 }

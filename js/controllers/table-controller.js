@@ -2,63 +2,61 @@
  * Created by Gabriel on 11/03/2016.
  */
 angular.module('so')
-    .controller('TableController', function ($rootScope, $scope, $interval, AlgorithmExecuterService) {
-    //Nao acessivel pela view
-    var service;
+    .controller('TableController', function ($rootScope, $scope, $interval, AlgorithmExecuterService, CommonFunctionsService) {
+        //Nao acessivel pela view
+        var service;
+        var cmService = CommonFunctionsService;
 
-    $scope.aptos = [[], [], [], []]
-    $scope.filaAptos;
-    $scope.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Prioridade', 'ETC(s)'];
-    $scope.procs = [];
-    $scope.config;
+        $scope.headers = cmService.headers;
+        $scope.config = cmService.config;
+        $scope.aptos = [];
 
-    $scope.collapseAptos = function() {
-        $rootScope.$broadcast('collapseAptos');
-    }
+        $scope.processos = function() {
+            return cmService.processos;
+        };
 
-
-    $scope.processos = function () {
-        return $scope.procs;
-    }
-
-    $scope.addProccess = function (active) {
-        service.criarProcesso($scope.processos(), active);
-    };
-
-    $scope.filterNaoExecutando = function (processo, prioridade) {
-        var estadosNaoPermitidos = ['Executando', 'Concluido'];
-        return processo.prioridade === parseInt(prioridade) && estadosNaoPermitidos.indexOf(processo.state) < 0;
-    }
-
-    var criaProcessos = function (service, processos) {
-        $scope.processos().length = 0;
-        $scope.aptos.length = 0;
-        var i;
-
-        for (i = 0; i < parseInt(processos); i++) {
-            $scope.addProccess(false);
+        $scope.showPrioridades = function () {
+            return cmService.config.algoritmo === '1';
         }
-    }
 
-    $scope.$on('iniciar', function (events, args) {
-        $scope.config = args;
-
-        service = AlgorithmExecuterService.construirAlgoritmo(args.algoritmo);
-
-        if (service) {
-            service.configurar(args);
-            criaProcessos(service, args.processos);
-            $scope.aptos = service.aptos;
-            $scope.filaAptos = service.availableAptos;
-
-            service.executar();
-        } else {
-            alert('Algoritmo nao implementado');
-            args.processadores = [];
+        $scope.collapseAptos = function () {
+            $rootScope.$broadcast('collapseAptos');
         }
-    });
 
-    $scope.$on('parar', function (events, args) {
-        $scope.processos().length = 0;
-    });
-})
+        $scope.addProccess = function (active) {
+            service.criarProcesso(active);
+        };
+
+        $scope.filterNaoExecutando = function (processo, prioridade) {
+            var estadosNaoPermitidos = ['Executando', 'Concluido'];
+            return processo.prioridade === parseInt(prioridade) && estadosNaoPermitidos.indexOf(processo.state) < 0;
+        }
+
+        $scope.checkColumn4 = function (processo) {
+            if ($scope.config.algoritmo === '1') {
+                return processo.prioridade;
+            }
+            if ($scope.config.algoritmo === '2') {
+                return cmService.formatHours(processo.horaExecucao);
+            }
+        }
+
+        $scope.$on('iniciar', function () {
+            service = AlgorithmExecuterService.construirAlgoritmo($scope.config.algoritmo);
+
+            if (service) {
+                service.configurar();
+                cmService.aptos = service.aptos;
+                $scope.aptos = cmService.aptos;
+
+                service.executar();
+            } else {
+                alert('Algoritmo nao implementado');
+                args.processadores = [];
+            }
+        });
+
+        $scope.$on('parar', function (events, args) {
+            $scope.processos.length = 0;
+        });
+    })

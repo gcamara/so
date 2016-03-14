@@ -8,17 +8,19 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
         tempos: [],
         processadores: [],
         cmService: CommonFunctionsService,
-        buscarTempo: function (start) {
+        buscarTempo: function () {
             //A ideia é que o tempo varie de acordo com a quantidade de cores
-            var tempo = container.random(start, 20);
-            if (this.tempos[tempo]) {
-                this.tempos[tempo] += 1;
-                if (this.tempos[tempo] > this.cmService.config.processadores.length) {
-                    tempo = this.buscarTempo(tempo);
-                }
-            } else {
-                this.tempos[tempo] = 1;
-            }
+            var tempo = container.random(4, 20);
+            //if (this.tempos[tempo]) {
+            //    if (this.tempos[tempo] >= this.cmService.config.processos*5) {
+            //        tempo = this.buscarTempo(tempo);
+            //    } else {
+            //        this.tempos[tempo] += 1;
+            //        return tempo;
+            //    }
+            //} else {
+            //    this.tempos[tempo] = 1;
+            //}
             return tempo;
         },
         configurar: function (args) {
@@ -28,7 +30,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
         },
         criarProcesso: function (active) {
             var pid = this.cmService.processos.length;
-            var buscarTempo = this.buscarTempo(4);
+            var buscarTempo = this.buscarTempo();
             var tempo = buscarTempo;
             var data = new Date();
             data.setSeconds(data.getSeconds() + buscarTempo);

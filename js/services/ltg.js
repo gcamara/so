@@ -2,6 +2,12 @@
  * Created by Gabriel on 12/03/2016.
  */
 so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval) {
+
+    $rootScope.$on('parar', function() {
+        CommonFunctionsService.processos.length = 0;
+
+    });
+
     return {
         config: CommonFunctionsService.config,
         aptos: [],
@@ -9,7 +15,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
         processadores: [],
         cmService: CommonFunctionsService,
         buscarTempo: function () {
-            //A ideia é que o tempo varie de acordo com a quantidade de cores
+            //A ideia ï¿½ que o tempo varie de acordo com a quantidade de cores
             var tempo = container.random(4, 20);
             //if (this.tempos[tempo]) {
             //    if (this.tempos[tempo] >= this.cmService.config.processos*5) {
@@ -69,14 +75,13 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             var aptos = this.aptos;
             var cmService = this.cmService;
 
-            var interval = function (interval) {
+            var interval = function (execFunction) {
                 var processador = this.processadores.shift();
                 if (!processador && processo.tempoTotal - processo.tempo > 0) {
                     processo.tempo += 1;
                 }
                 else {
-                    $interval.cancel(interval);
-
+                    $interval.cancel(execFunction);
 
                     if (processador) {
                         processador = cmService.config.processadores[processador.id];
@@ -86,24 +91,28 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
                         processo.executado = 0;
                         processo.state = 'Executando';
                         processador.decreaseTime = $interval(function () {
-                            processo.executado += container.random(2, 5);
-                            var pct = processo.executado;
+                            if (cmService.config.running) {
+                                processo.executado += container.random(2, 5);
+                                var pct = processo.executado;
 
-                            if (pct >= 100) {
-                                $interval.cancel(processador.decreaseTime);
-                                $interval.cancel(interval);
-                                processo.progress = 100;
-                                processador.processo = undefined;
-                                processo.state = 'Concluido';
-                                this.processadores.splice(processador.id, 0, processador);
-                                $rootScope.$broadcast('aptoMudou', {'apto': processo});
+                                if (pct >= 100) {
+                                    $interval.cancel(processador.decreaseTime);
+                                    $interval.cancel(execFunction);
+                                    processo.progress = 100;
+                                    processador.processo = undefined;
+                                    processo.state = 'Concluido';
+                                    this.processadores.splice(processador.id, 0, processador);
+                                    $rootScope.$broadcast('aptoMudou', {'apto': processo});
+                                } else {
+                                    processo.progress = pct;
+                                }
                             } else {
-                                processo.progress = pct;
+                                $interval.cancel(processador.decreaseTime);
                             }
                         }, 500);
                     } else {
                         processo.state = 'Abortado';
-                        $interval.cancel(interval);
+                        $interval.cancel(execFunction);
                         aptos.splice(aptos.indexOf(processo), 1);
                     }
                     $rootScope.$broadcast('aptoMudou', {'apto': processo});

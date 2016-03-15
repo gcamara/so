@@ -29,7 +29,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
             }
         }
         return apto;
-    }
+    };
 
     /**
      * Executa o processo
@@ -135,7 +135,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
         for (i = 0; i < parseInt(CommonFunctionsService.config.processos); i++) {
             roundrobin.criarProcesso(false);
         }
-    }
+    };
 
     /**
      *Cria processo especifico para o Round Robin
@@ -153,7 +153,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
             tempo: 0,
             tempoTotal: container.random(4, 20),
             active: active
-        }
+        };
 
         roundrobin.aptos[prioridade].push(proc);
         CommonFunctionsService.processos.push(proc);

@@ -34,7 +34,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             this.cmService.headers.splice(4, 1, 'Deadline');
             processadores = angular.copy(this.cmService.config.processadores);
         },
-        criarProcesso: function (active) {
+        criarProcesso: function (active, run) {
             var pid = this.cmService.processos.length;
             var buscarTempo = this.buscarTempo();
             var tempo = buscarTempo;
@@ -50,7 +50,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
                 active: active,
                 tempoTotal: tempo,
                 tempo: 0
-            }
+            };
 
             this.aptos.push(proc);
 
@@ -59,7 +59,10 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             this.cmService.processos.push(proc);
             this.cmService.insertionSort(this.cmService.processos);
 
-            this.executarProcesso(proc);
+            if  (run) {
+                this.executarProcesso(proc);
+            }
+
             $rootScope.$broadcast('aptoMudou', {'apto': proc, 'lastState': '-success'});
         },
         getHoraExecucao: function (processo) {
@@ -86,7 +89,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
                     if (processador) {
                         processador = cmService.config.processadores[processador.id];
                         var index = aptos.indexOf(processo);
-                        aptos.splice(index, 1)
+                        aptos.splice(index, 1);
                         processador.processo = processo;
                         processo.executado = 0;
                         processo.state = 'Executando';
@@ -135,8 +138,14 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
                 this.criarProcesso(false);
             }
         },
+        executarTodos: function() {
+          this.cmService.processos.forEach(function(proc) {
+              this.executarProcesso(proc);
+          }, this);
+        },
         executar: function () {
             this.criaProcessos();
+            this.executarTodos();
         }
     }
 });

@@ -1,7 +1,7 @@
 /**
  * Created by Gabriel on 05/03/2016.
  */
-var so = angular.module('so', ['minhasDiretivas', 'ngRoute', 'ngAnimate'])
+var so = angular.module('so', ['minhasDiretivas', 'ngRoute', 'ngAnimate']);
 
 
 var container = {
@@ -16,4 +16,4 @@ var container = {
 
     } //Fim Fonte
 
-}
+};

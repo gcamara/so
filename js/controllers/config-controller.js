@@ -47,13 +47,13 @@ angular.module('so')
 
             $scope.config.running = true;
             $rootScope.$broadcast('iniciar');
-        }
+        };
 
         $scope.parar = function () {
             $scope.config.processadores = [];
             $scope.config.running = false;
             $rootScope.$broadcast('parar');
-        }
+        };
 
         $rootScope.$on('parar', $scope.parar());
     });

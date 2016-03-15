@@ -16,10 +16,8 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService) 
                 service = LTGService;
                 break;
         }
-        ;
-
         return service;
-    }
+    };
 
     return algoritmo;
 })

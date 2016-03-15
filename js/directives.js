@@ -62,7 +62,7 @@ angular.module('minhasDiretivas', [])
             replace: true,
             link: function (scope, element) {
                 $rootScope.$on('collapseAptos', function () {
-                    var clzz = 'glyphicon-chevron-down'
+                    var clzz = 'glyphicon-chevron-down';
 
                     if (element.hasClass(clzz)) {
                         element.removeClass(clzz);

@@ -17,20 +17,20 @@ angular.module('so')
 
         $scope.showPrioridades = function () {
             return cmService.config.algoritmo === '1';
-        }
+        };
 
         $scope.collapseAptos = function () {
             $rootScope.$broadcast('collapseAptos');
-        }
+        };
 
         $scope.addProccess = function (active) {
-            service.criarProcesso(active);
+            service.criarProcesso(active, true);
         };
 
         $scope.filterNaoExecutando = function (processo, prioridade) {
             var estadosNaoPermitidos = ['Executando', 'Concluido'];
             return processo.prioridade === parseInt(prioridade) && estadosNaoPermitidos.indexOf(processo.state) < 0;
-        }
+        };
 
         $scope.checkColumn4 = function (processo) {
             if ($scope.config.algoritmo === '1') {
@@ -39,7 +39,7 @@ angular.module('so')
             if ($scope.config.algoritmo === '2') {
                 return cmService.formatHours(processo.horaExecucao);
             }
-        }
+        };
 
         $scope.$on('iniciar', function () {
             service = AlgorithmExecuterService.construirAlgoritmo($scope.config.algoritmo);
@@ -59,4 +59,4 @@ angular.module('so')
         $scope.$on('parar', function (events, args) {
             $scope.processos.length = 0;
         });
-    })
+    });

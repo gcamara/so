@@ -90,6 +90,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                             apto.progress = 100;
                             apto.state = 'Concluido';
                         }
+                        $rootScope.$broadcast('BuscarProximo');
                     }
                     $rootScope.$broadcast('aptoMudou', {'apto': apto});
                 }, 1000);
@@ -97,6 +98,12 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
         }
 
     };
+
+    $rootScope.$on('BuscarProximo', function() {
+        if (roundrobin.config.running) {
+            execFunction(roundrobin.config);
+        }
+    });
 
     /**
      * Configura o servico
@@ -116,15 +123,9 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
      */
     roundrobin.executar = function () {
         roundrobin.criaProcessos();
-        var func = $interval(function () {
-            //Nao esta mais em execucao
-            if (!roundrobin.config.running) {
-                $interval.cancel(func);
-                return;
-            }
-
-            execFunction(roundrobin.config);
-        }, 500);
+        roundrobin.config.processadores.forEach(function() {
+         $rootScope.$broadcast('BuscarProximo');
+        });
     };
 
     roundrobin.criaProcessos = function () {

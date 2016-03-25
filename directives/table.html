@@ -9,7 +9,7 @@
         </div>
         <div id="pbody" class="collapse panel-body">
             <div class="row">
-                <div ng-show="!showPrioridades()">
+                <div ng-show="algorithm() == '2'">
                     <div class="col-md-12">
                         <div class="row"
                              style="overflow-y: auto; overflow-x: hidden; min-height: 20px; max-height: 100px;">
@@ -20,11 +20,14 @@
                         </div>
                     </div>
                 </div>
-                <div ng-show="showPrioridades()">
+                <div ng-show="algorithm() == '1'">
                     <fila-aptos prioridade="0"></fila-aptos>
                     <fila-aptos prioridade="1"></fila-aptos>
                     <fila-aptos prioridade="2"></fila-aptos>
                     <fila-aptos prioridade="3"></fila-aptos>
+                </div>
+                <div ng-show="algorithm() == '3'">
+
                 </div>
             </div>
         </div>

@@ -33,7 +33,7 @@ angular.module('minhasDiretivas', [])
         return {
             restrict: 'E',
             replace: true,
-            scope:{
+            scope: {
                 processador: '='
             },
             templateUrl: 'directives/processador.html'
@@ -87,6 +87,7 @@ angular.module('minhasDiretivas', [])
             link: function (scope, element) {
                 $rootScope.$on('aptoMudou', function (event, args) {
                     if (args.apto == scope.apto) {
+
                         if (!scope.ultimoTipo) {
                             scope.ultimoTipo = scope.tipo + args.lastState;
                         }

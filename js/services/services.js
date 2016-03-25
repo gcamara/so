@@ -2,7 +2,7 @@
  * Created by Gabriel on 08/03/2016.
  */
 
-so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService) {
+so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, IntervalBasedService) {
     var algoritmo = {};
 
 
@@ -14,6 +14,9 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService) 
                 break;
             case '2':
                 service = LTGService;
+                break;
+            case '3':
+                service = IntervalBasedService;
                 break;
         }
         return service;
@@ -52,7 +55,7 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService) 
             },
             aptos: [],
             processos: [],
-            headers: ['PID', 'Processo', 'Progresso', 'Estado', 'Prioridade', 'ETC(s)'],
+            headers: [],
 
             //Fonte https://pt.wikipedia.org/wiki/Insertion_sort
             insertionSort: function (processos) {

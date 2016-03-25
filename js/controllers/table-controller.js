@@ -15,8 +15,8 @@ angular.module('so')
             return cmService.processos;
         };
 
-        $scope.showPrioridades = function () {
-            return cmService.config.algoritmo === '1';
+        $scope.algorithm = function () {
+            return cmService.config.algoritmo;
         };
 
         $scope.collapseAptos = function () {
@@ -24,7 +24,7 @@ angular.module('so')
         };
 
         $scope.addProccess = function (active) {
-            service.criarProcesso(active, true);
+            service.criarProcesso(active);
         };
 
         $scope.filterNaoExecutando = function (processo, prioridade) {

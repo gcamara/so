@@ -8,6 +8,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
     roundrobin.availableProcessors = [];
 
     var ultimaFila = 0;
+    var cmService = CommonFunctionsService;
 
     /**
      * Busca o proximo apto
@@ -114,6 +115,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
         roundrobin.aptos = [[], [], [], []];
         roundrobin.config = CommonFunctionsService.config;
         roundrobin.availableProcessors = angular.copy(roundrobin.config.processadores);
+        cmService.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Prioridade', 'ETC(s)'];
 
         ultimaFila = 0;
     };
@@ -159,6 +161,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
         roundrobin.aptos[prioridade].push(proc);
         CommonFunctionsService.processos.push(proc);
         $rootScope.$broadcast('aptoMudou', {'apto': proc, 'lastState': '-success'});
+        $rootScope.$broadcast('BuscarProximo', {'apto': proc });
     };
 
     return roundrobin;

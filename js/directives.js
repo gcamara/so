@@ -76,29 +76,39 @@ angular.module('minhasDiretivas', [])
         }
     })
     .directive("stateElement", function ($rootScope, CommonFunctionsService) {
-        return {
+
+        var ddo = {
             restrict: 'A',
             replace: true,
             scope: {
                 apto: '=',
-                tipo: '@',
-                ultimoTipo: '@'
+                tipo: '@'
             },
             link: function (scope, element) {
                 $rootScope.$on('aptoMudou', function (event, args) {
-                    if (args.apto == scope.apto) {
+                    if (args.apto.pid != undefined) {
+                        if (args.apto == scope.apto) {
+                            var clzz = CommonFunctionsService.stateClass(scope.apto, scope.tipo);
+                            var toRemove = clzz.replace(scope.tipo + '-', '');
 
-                        if (!scope.ultimoTipo) {
-                            scope.ultimoTipo = scope.tipo + args.lastState;
+                            var lista = ['success', 'warning', 'danger', 'info'];
+                            lista.splice(lista.indexOf(toRemove), 1);
+                            lista.forEach(function (subtipo) {
+                                element.removeClass(scope.tipo + '-' + subtipo);
+                            });
+
+                            if (scope.apto.state === 'Concluido') {
+                                element.removeClass('active');
+                            }
+
+                            element.addClass(clzz);
                         }
-                        element.removeClass(scope.ultimoTipo);
-                        var clzz = CommonFunctionsService.stateClass(scope.apto, scope.tipo);
-                        scope.ultimoTipo = clzz;
-                        element.addClass(clzz);
                     }
                 });
             }
         }
+
+        return ddo;
     })
     .directive("progressProcess", function () {
         return {

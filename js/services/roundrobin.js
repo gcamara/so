@@ -47,7 +47,6 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
 
             //Caso hajam processadores disponiveis
             if (currentProcessor) {
-                var aptoCopy = apto;
                 apto = roundrobin.aptos[apto.prioridade].shift();
                 var processador = config.processadores[currentProcessor.id];
 
@@ -63,6 +62,8 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                 if (processador.decreaseTime) {
                     $interval.cancel(processador.decreaseTime);
                 }
+                apto.state = 'Executando';
+                cmService.increaseProcessorUsage(processador);
                 processador.decreaseTime = $interval(function () {
                     if (processador.tempo && apto.tempo < apto.tempoTotal) {
                         if (processador.tempo - 1 > 0) {
@@ -71,9 +72,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                             processador.tempo = 0;
                         }
 
-                        apto.state = 'Executando';
                         apto.tempo += 1;
-
                         pct = (apto.tempo / apto.tempoTotal) * 100;
                         apto.progress = Math.floor(pct);
                     } else {
@@ -91,6 +90,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                             apto.progress = 100;
                             apto.state = 'Concluido';
                         }
+                        cmService.decreaseProcessorUsage(processador);
                         $rootScope.$broadcast('BuscarProximo');
                     }
                     $rootScope.$broadcast('aptoMudou', {'apto': apto});
@@ -100,7 +100,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
 
     };
 
-    $rootScope.$on('BuscarProximo', function() {
+    $rootScope.$on('BuscarProximo', function () {
         if (roundrobin.config.running) {
             execFunction(roundrobin.config);
         }
@@ -125,14 +125,14 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
      */
     roundrobin.executar = function () {
         roundrobin.criaProcessos();
-        roundrobin.config.processadores.forEach(function() {
-         $rootScope.$broadcast('BuscarProximo');
+        roundrobin.config.processadores.forEach(function () {
+            $rootScope.$broadcast('BuscarProximo');
         });
     };
 
     roundrobin.criaProcessos = function () {
         CommonFunctionsService.processos.length = 0;
-        roundrobin.aptos = [[],[],[],[]];
+        roundrobin.aptos = [[], [], [], []];
         var i;
 
         for (i = 0; i < parseInt(CommonFunctionsService.config.processos); i++) {
@@ -161,7 +161,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
         roundrobin.aptos[prioridade].push(proc);
         CommonFunctionsService.processos.push(proc);
         $rootScope.$broadcast('aptoMudou', {'apto': proc, 'lastState': '-success'});
-        $rootScope.$broadcast('BuscarProximo', {'apto': proc });
+        $rootScope.$broadcast('BuscarProximo', {'apto': proc});
     };
 
     return roundrobin;

@@ -55,12 +55,12 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
 
             //Ordena os elementos
             this.cmService.insertionSort(this.aptos);
-            this.cmService.processos.push(proc);
-            this.cmService.insertionSort(this.cmService.processos);
+            this.processos.push(proc);
+            this.cmService.insertionSort(this.processos);
 
             this.countDown(proc);
 
-            $rootScope.$broadcast('aptoMudou', {'apto': proc, 'lastState': '-success'});
+            console.log("processo: "+this.processos.indexOf(proc));
         }
 
         $rootScope.$watch(function () {
@@ -88,7 +88,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
                     processo.tempo += 1;
                 } else if (!etc && processo.state != 'Executando') {
                     abortaProcesso(processo, execFunction, aptos);
-                    $rootScope.$broadcast('aptoMudou', {'apto': processo});
+                    $rootScope.$broadcast('aptoMudou', {'apto': processo, 'lastState': '-success'});
                 }
             }
 
@@ -123,6 +123,8 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             processador.processo = processo;
             processo.executado = 0;
             processo.state = 'Executando';
+
+            self.cmService.increaseProcessorUsage(processador);
             processador.decreaseTime = $interval(function () {
                 if (self.cmService.config.running) {
                     processo.executado += container.random(2, 5);
@@ -133,11 +135,15 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
                         processo.progress = 100;
                         processador.processo = undefined;
                         processo.state = 'Concluido';
-                        $rootScope.$broadcast('aptoMudou', {'apto': processo});
+                        $rootScope.$broadcast('aptoMudou', {'apto': processo, 'lastState': '-info'});
                         this.processadores.splice(processador.id, 0, processador);
+                        self.cmService.decreaseProcessorUsage(processador);
                         self.executarProximo();
                     } else {
                         processo.progress = pct;
+                        if (pct < 20) {
+                            $rootScope.$broadcast('aptoMudou', {'apto': processo});
+                        }
                     }
                 } else {
                     $interval.cancel(processador.decreaseTime);

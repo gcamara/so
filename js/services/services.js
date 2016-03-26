@@ -3,29 +3,35 @@
  */
 
 so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, IntervalBasedService) {
-    var algoritmo = {};
+        var algoritmo = {};
 
 
-    algoritmo.construirAlgoritmo = function (tipo) {
-        var service;
-        switch (tipo) {
-            case '1':
-                service = RoundRobinService;
-                break;
-            case '2':
-                service = LTGService;
-                break;
-            case '3':
-                service = IntervalBasedService;
-                break;
-        }
-        return service;
-    };
+        algoritmo.construirAlgoritmo = function (tipo) {
+            var service;
+            switch (tipo) {
+                case '1':
+                    service = RoundRobinService;
+                    break;
+                case '2':
+                    service = LTGService;
+                    break;
+                case '3':
+                    service = IntervalBasedService;
+                    break;
+            }
+            return service;
+        };
 
-    return algoritmo;
-})
+        return algoritmo;
+    })
     .factory('CommonFunctionsService', function () {
         return {
+            increaseProcessorUsage: function (processador) {
+                processador.usage[5] += 1;
+            },
+            decreaseProcessorUsage: function (processador) {
+                processador.usage[5] -= 1;
+            },
             stateClass: function (row, type) {
                 var clazz = '';
                 switch (row.state) {

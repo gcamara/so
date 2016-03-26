@@ -6,6 +6,7 @@ angular.module('so')
         //Nao acessivel pela view
         var service;
         var cmService = CommonFunctionsService;
+        $scope.cmService = CommonFunctionsService;
 
         $scope.headers = cmService.headers;
         $scope.config = cmService.config;

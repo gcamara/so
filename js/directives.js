@@ -42,7 +42,10 @@ angular.module('minhasDiretivas', [])
     .directive("filaAptos", function (CommonFunctionsService) {
         return {
             scope: {
-                prioridade: '@'
+                titulo: '@',
+                prioridade: '@',
+                lista: '=',
+                propriedade: '='
             },
             replace: true,
             require: '^tabela',

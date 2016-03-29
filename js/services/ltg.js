@@ -117,7 +117,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             }
         }
 
-        this.executarProcesso = function (processo, processador) {
+        this.iniciarProcessador = function (processo, processador) {
             processador = this.config.processadores[processador.id];
 
             processador.processo = processo;
@@ -159,7 +159,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             var processo = self.aptos.shift();
 
             if (processo) {
-                self.executarProcesso(processo, processador);
+                self.iniciarProcessador(processo, processador);
             } else {
                 processadores.splice(processador.id, 0, processador);
             }

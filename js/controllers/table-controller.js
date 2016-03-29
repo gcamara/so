@@ -3,6 +3,10 @@
  */
 angular.module('so')
     .controller('TableController', function ($rootScope, $scope, $interval, AlgorithmExecuterService, CommonFunctionsService) {
+        const ROUND_ROBIN = '1';
+        const LTG = '2';
+        const INTERVAL = '3';
+
         //Nao acessivel pela view
         var service;
         var cmService = CommonFunctionsService;
@@ -30,16 +34,24 @@ angular.module('so')
 
         $scope.filterNaoExecutando = function (processo, prioridade) {
             var estadosNaoPermitidos = ['Executando', 'Concluido'];
-            return processo.prioridade === parseInt(prioridade) && estadosNaoPermitidos.indexOf(processo.state) < 0;
+            var prioridade = (prioridade ? processo.prioridade === parseInt(prioridade) : true)
+            return prioridade && estadosNaoPermitidos.indexOf(processo.state) < 0;
         };
 
         $scope.checkColumn4 = function (processo) {
-            if ($scope.config.algoritmo === '1') {
-                return processo.prioridade;
+            var ret;
+            switch ($scope.config.algoritmo) {
+                case ROUND_ROBIN:
+                    ret = processo.prioridade
+                    break;
+                case LTG:
+                    ret = cmService.formatHours(processo.horaExecucao);
+                    break;
+                case INTERVAL:
+                    ret = cmService.formatHours(processo.startTime) + ' - ' + cmService.formatHours(processo.endTime);
+                    break;
             }
-            if ($scope.config.algoritmo === '2') {
-                return cmService.formatHours(processo.horaExecucao);
-            }
+            return ret;
         };
 
         $scope.$on('iniciar', function () {

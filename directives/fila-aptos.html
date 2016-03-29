@@ -1,10 +1,10 @@
 <div class="col-md-3">
     <div class="panel panel-default">
-        <div class="panel-heading">{{prioridade === 'Unica' ? 'Fila de aptos' : 'Prioridade '+ prioridade}}</div>
+        <div class="panel-heading">{{titulo}}</div>
         <div class="panel-body">
             <div class="row" style="overflow-y: auto; overflow-x: hidden; min-height: 20px; max-height: 100px;">
                 <div class="col-md-2" style="padding-right: -10px"
-                     ng-repeat="apto in processos | filter: filterNaoExecutando">
+                     ng-repeat="apto in lista | filter: filterNaoExecutando">
                     <div class="label label-success">P{{apto.pid}}</div>
                 </div>
             </div>

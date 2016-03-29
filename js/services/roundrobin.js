@@ -76,6 +76,7 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                         pct = (apto.tempo / apto.tempoTotal) * 100;
                         apto.progress = Math.floor(pct);
                     } else {
+                        cmService.decreaseProcessorUsage(processador);
                         processador.estado = 'Parado';
                         $interval.cancel(processador.decreaseTime);
                         processador.processo = undefined;
@@ -90,7 +91,6 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                             apto.progress = 100;
                             apto.state = 'Concluido';
                         }
-                        cmService.decreaseProcessorUsage(processador);
                         $rootScope.$broadcast('BuscarProximo');
                     }
                     $rootScope.$broadcast('aptoMudou', {'apto': apto});

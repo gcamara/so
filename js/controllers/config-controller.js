@@ -10,7 +10,7 @@ angular.module('so')
         $scope.timer;
 
         $scope.config = CommonFunctionsService.config;
-
+        
         //Observa a quantidade de cores que deve estar num intervalo de 1 a 64
         $scope.$watch(
             function () {

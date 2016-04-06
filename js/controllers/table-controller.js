@@ -16,6 +16,15 @@ angular.module('so')
         $scope.config = cmService.config;
         $scope.aptos = [];
 
+        $scope.remainder = function() {
+            console.log("Chamado..");
+            if (service.remainder) {
+                return service.remainder;
+            } else {
+                return [];
+            }
+        }
+
         $scope.processos = function () {
             return cmService.processos;
         };

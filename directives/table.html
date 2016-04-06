@@ -23,11 +23,23 @@
                 <div ng-show="algorithm() == '1'">
                     <fila-aptos ng-repeat="i in [[],[],[],[]]" titulo="Prioridade {{$index}}"
                                 prioridade="{{$index}}" lista="processos()"
-                                propriedade="processo.prioridade" ></fila-aptos>
+                                propriedade="processo.prioridade"></fila-aptos>
                 </div>
                 <div ng-show="algorithm() == '3'">
                     <fila-aptos ng-repeat="processador in config.processadores"
                                 titulo="Processador {{$index}}" lista="processador.aptos"></fila-aptos>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="algorithm() == '3'">
+        <div class="panel panel-danger">
+            <div class="panel-heading">Processos restantes</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1 label label-danger" ng-repeat="processo in remainder()" style="margin:10px;">P{{processo.pid}} &nbsp;
+                    </div>
                 </div>
             </div>
         </div>

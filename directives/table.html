@@ -1,13 +1,12 @@
 <div class="animate-show" ng-hide="!config.running">
-
     <div class="panel panel-primary">
         <div class="panel-heading" style="font-size: 12px">
             Aptos
             <button id="aptosBtn" style="margin-top: 0px" collapse-button
-                    class="btn btn-default pull-right glyphicon glyphicon-chevron-down btn-xs"
+                    class="btn btn-default pull-right glyphicon glyphicon-chevron-up btn-xs"
                     data-toggle="collapse" ng-click="collapseAptos()" data-target="#pbody"></button>
         </div>
-        <div id="pbody" class="collapse panel-body">
+        <div id="pbody" class="panel-body collapse in">
             <div class="row">
                 <div ng-show="algorithm() == '2'">
                     <div class="col-md-12">
@@ -38,7 +37,8 @@
             <div class="panel-heading">Processos restantes</div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-1 label label-danger" ng-repeat="processo in remainder()" style="margin:10px;">P{{processo.pid}} &nbsp;
+                    <div class="col-md-1 label label-danger" ng-repeat="processo in remainder()" style="margin:10px;">
+                        P{{processo.pid}} &nbsp;
                     </div>
                 </div>
             </div>

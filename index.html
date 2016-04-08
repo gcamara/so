@@ -38,7 +38,7 @@
 </div>
 <div style="padding: 20px" ng-controller="ConfigController">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <form novalidate name="configuracoes" ng-submit="criarProcessadores()">
                 <div class="panel panel-primary">
                     <div class="panel-heading" style="font-size: 12px">Configurações</div>
@@ -106,34 +106,39 @@
                         <a class="btn btn-danger" ng-click="parar()">Parar</a>
                     </div>
                 </div>
+            </form>
+        </div>
+        <!-- Fim formulario -->
+    </div>
+    <!-- Fim Topo -->
 
-                <div ng-show="config.processadores.length">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading" style="font-size: 12px">
-                            Processadores
-                        </div>
-                        <div class="panel-body processadores">
-                            <div class="row">
-                                <processador ng-repeat="processador in config.processadores"
-                                             processador="processador"></processador>
-                            </div>
+    <div class="row">
+        <div ng-show="config.processadores.length" style="height: 400px">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="font-size: 12px">
+                        Processadores
+                    </div>
+                    <div class="panel-body processadores">
+                        <div ng-repeat="processador in config.processadores">
+                            <div class="row" ng-if="$index % 3 == 0"></div>
+                            <processador processador="processador"></processador>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div> <!-- Fim formulario -->
-        <div class="col-md-6">
-            <div class="panel panel-default" ng-show="config.processadores.length">
-                <div class="panel-heading">Uso dos processadores</div>
-                <div class="panel-body">
-                    <canvas id="line" class="chart chart-line" chart-data="data"
-                            chart-labels="labels" chart-legend="true" chart-series="series"
-                            chart-click="onClick"></canvas>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Uso dos processadores</div>
+                    <div class="panel-body">
+                        <canvas id="line" class="chart chart-line" chart-data="data"
+                                chart-labels="labels" chart-legend="true" chart-series="series"
+                                chart-click="onClick"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Fim Topo -->
 
     <!-- Inicio do container generico -->
     <tabela titulo="Processos"></tabela>

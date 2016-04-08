@@ -120,6 +120,10 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
         this.iniciarProcessador = function (processo, processador) {
             processador = this.config.processadores[processador.id];
 
+            if (processador.processo) {
+                return;
+            }
+
             processador.processo = processo;
             processo.executado = 0;
             processo.state = 'Executando';

@@ -84,4 +84,8 @@ angular.module('so')
         $scope.$on('parar', function (events, args) {
             $scope.processos.length = 0;
         });
+
+        $scope.tempoLinha = function(row) {
+            return Math.round(row.tempoTotal - row.tempo);
+        }
     });

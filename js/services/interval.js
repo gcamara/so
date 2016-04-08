@@ -12,6 +12,8 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
     var self = this;
 
     interval.configurar = function () {
+        //Limpa os vetores
+        interval.remainder = [];
         this.config.aptos = [];
         this.cmService.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Intervalo', 'ETC(s)'];
         this.processadores = this.config.processadores;
@@ -84,33 +86,57 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
     }
 
     interval.agendar = function () {
+        var processadores = interval.processadores;
+        var index = -1;
         // Pega a lista de aptos do processador 0
-        var lista = [].concat(interval.processadores[0].aptos);
+        var lista = [].concat(processadores[0].aptos);
+
+        // Adiciona o processo em execucao tambem,
+        // pois tem que contar o endtime dele
+        if (processadores[0].processo) {
+            lista.splice(0, 0, processadores[0].processo);
+        }
         interval.processadores[0].aptos.length = 0;
 
         //Concatena com o que restou da ultima iteracao
-        lista.concat(interval.remainder);
+        lista = lista.concat(interval.remainder);
 
         //Agenda e gera um resto
         lista = interval.schedule(lista);
+
+        //Remove o que esta em execucao
+        index = lista.indexOf(processadores[0].processo)
+        if (index > -1) {
+            lista.splice(index, 1);
+        }
 
         //Atribui as listas para os processadores
         var i = 0;
         interval.processadores.forEach(function (processador) {
             if (i > 0) {
+                lista = [];
                 processador.aptos = processador.aptos.concat(interval.remainder);
-                console.log("Lista de aptos processador " + processador.id + ": " + processador.aptos);
-                lista = interval.schedule(processador.aptos);
+                //Processo em execucao eh adicionado, pois tem que contar o endtime dele
+                if (processador.processo) {
+                    lista = lista.concat(processador.processo);
+                }
+                lista = lista.concat(processador.aptos);
+                lista = interval.schedule(lista);
+
+                index = lista.indexOf(processador.processo)
+                if (index > -1) {
+                    lista.splice(index, 1);
+                }
             }
             processador.aptos = lista;
-            console.log("Foi atribuido para o proc: " + processador.id + " a lista: " + lista);
 
             i += 1;
 
             if (processador.aptos.length) {
-                //Caso o processador ja esteja rodando
+                //Caso o processador nao esteja rodando
                 if (!processador.execFunc) {
                     processador.execFunc = interval.createExecFunction(processador);
+                    console.log("Iniciado processo para processador "+processador.id);
                 }
             }
         });
@@ -131,33 +157,37 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
         var data = new Date();
         var processo = processador.aptos[0];
         if (processo) {
-            if (data.getTime() > processo.endTime.getTime() && processo.state == 'Pronto') {
-                processador.aptos.splice(processador.aptos.indexOf(processo), 1);
-                return;
-            }
-
+            //Se processador ja tiver processo, sai
             if (processador.processo) {
                 return;
             }
-
 
             var horaAtualFormatada = interval.cmService.formatHours(data);
             var horaProcFormatada = interval.cmService.formatHours(processo.startTime);
             var horasStringIguais = horaAtualFormatada == horaProcFormatada;
 
             if (horasStringIguais && interval.notAllowedStates.indexOf(processo.state) == -1) {
+                processo.tempoTotal = 0;
+                processo.tempo = 0;
+                
+                $interval.cancel(processo.countDown);
+                processo.state = 'Executando';
                 $interval.cancel(processador.execFunc);
                 processo = processador.aptos.shift();
                 processador.processo = processo;
                 interval.cmService.increaseProcessorUsage(processador);
-                processo.state = 'Executando';
                 $rootScope.$broadcast('aptoMudou', {apto: processo});
+                var executado = processo.endTime.getTime() - processo.startTime.getTime();
+                executado /= 1000;
+                executado  = Math.round(100/executado);
+                console.log("Tempo por segundo: "+executado);
 
                 processador.decreaseTime = $interval(function () {
-                    processo.executado += container.random(2, 5);
+                    processo.executado += executado;
                     processo.progress = processo.executado;
 
                     if (processo.executado >= 100) {
+                        $rootScope.$broadcast('ProcessoTerminou', {processador: processador});
                         processo.executado = 100;
                         processo.progress = 100;
 
@@ -166,16 +196,10 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                         $interval.cancel(processador.decreaseTime);
                         interval.cmService.decreaseProcessorUsage(processador);
                         $rootScope.$broadcast('aptoMudou', {apto: processo});
-                        $rootScope.$broadcast('ProcessoTerminou', {processador: processador});
                     } else if (processo.executado < 20) {
                         $rootScope.$broadcast('aptoMudou', {apto: processo});
                     }
                 }, 1000);
-            }
-        } else {
-            if (processador.aptos[1]) {
-                console.log("Processo indefinido... removendo de aptos do processador " + processador.id);
-                processador.aptos.splice(0, 1);
             }
         }
     }
@@ -247,6 +271,8 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                 processo.tempo += 1;
             }
         }, 1000);
+
+        processo.countDown = countTimer;
     }
 
 

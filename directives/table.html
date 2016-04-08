@@ -70,7 +70,7 @@
                         </div>
                     </td>
                     <td>{{checkColumn4(row)}}</td>
-                    <td>{{row.tempo === 0 ? row.tempoTotal : row.tempoTotal - row.tempo}}s</td>
+                    <td>{{row.tempo === 0 ? row.tempoTotal : tempoLinha(row)}}s</td>
                 </tr>
                 </tbody>
             </table>

@@ -17,8 +17,7 @@ angular.module('so')
         $scope.aptos = [];
 
         $scope.remainder = function() {
-            console.log("Chamado..");
-            if (service.remainder) {
+            if (service && service.remainder) {
                 return service.remainder;
             } else {
                 return [];
@@ -62,6 +61,10 @@ angular.module('so')
             }
             return ret;
         };
+
+        $scope.horaSistema = function() {
+            return cmService.formatHours(new Date());
+        }
 
         $scope.$on('iniciar', function () {
             service = AlgorithmExecuterService.construirAlgoritmo($scope.config.algoritmo);

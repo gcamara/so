@@ -55,8 +55,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
             self.revert(processo);
         });
 
-        // lista.sort(function (procA, procB) { return procB.startTime - procA.startTime; });
-        lista.sort();
+        lista.sort(function (procA, procB) { return procA.startTime - procB.startTime; });
 
         lista.forEach(function (processo) {
             if (processo.endTime.getTime() >= last_end.getTime()) {
@@ -193,12 +192,12 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
 
     interval.buildProcesso = function (active) {
         var time = new Date();
-        time.setSeconds(time.getSeconds() + container.random(5, 10));
-        var timeChanged = new Date();
-        timeChanged.setSeconds(timeChanged.getSeconds() + container.random(11, 15));
+        time.setSeconds(time.getSeconds() + container.random(2, 40));
+        var timeChanged = new Date(time.getTime());
+        timeChanged.setSeconds(timeChanged.getSeconds() + container.random(20, 30));
 
         var i = interval.cmService.processos.length;
-        var tempoTotal = timeChanged.getTime() - new Date().getTime();
+        var tempoTotal = time.getTime() - new Date().getTime();
         tempoTotal /= 1000;
 
         var processo = new Processo();
@@ -222,7 +221,10 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                 return;
             }
             var data = new Date();
-            if (data.getTime() > processo.endTime.getTime() && processo.state == 'Pronto') {
+            var processTime = angular.copy(processo.startTime);
+            processTime.setSeconds(processTime.getSeconds() + 1);
+
+            if (data.getTime() > processTime.getTime() && processo.state == 'Pronto') {
                 processo.state = 'Abortado';
                 $rootScope.$broadcast('aptoMudou', {apto: processo});
                 interval.remainder.splice(interval.remainder.indexOf(processo), 1);

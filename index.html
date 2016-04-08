@@ -36,113 +36,116 @@
 <div class="jumbotron" style="margin-top: 10px; color: white; background-color: #323232; text-align: center">
     <h2>Sistemas Operacionais</h2>
 </div>
-<div style="padding: 20px" ng-controller="ConfigController">
-    <div class="row">
-        <div class="col-md-12">
-            <form novalidate name="configuracoes" ng-submit="criarProcessadores()">
-                <div class="panel panel-primary">
-                    <div class="panel-heading" style="font-size: 12px">Configurações</div>
-                    <div class="panel-body" style="margin-left: 10px; margin-right: 10px">
-                        <div class="row">
+<div class="container">
+    <div style="padding: 20px" ng-controller="ConfigController">
+        <div class="row">
+            <div class="col-md-12">
+                <form novalidate name="configuracoes" ng-submit="criarProcessadores()">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="font-size: 12px">Configurações</div>
+                        <div class="panel-body" style="margin-left: 10px; margin-right: 10px">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="input-group form-group">
                                 <span class="input-group-addon" style="padding-right: 40px">
                                     <img width="18" height="18" src="resources/core.png"> Cores
                                 </span>
-                                        <input ng-disabled="config.running" ng-model="config.cores"
-                                               class="form-control">
+                                            <input ng-disabled="config.running" ng-model="config.cores"
+                                                   class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group form-group">
+                                    <div class="col-md-3">
+                                        <div class="input-group form-group">
                                 <span class="input-group-addon" style="padding-right: 32px">
                                     <img src="resources/code.png" width="18" height="18">
                                     Algoritmo
                                 </span>
-                                        <select ng-disabled="config.running" ng-model="config.algoritmo"
-                                                class="form-control"
-                                                style="font-size: 10px">
-                                            <option value="1">Round Robin</option>
-                                            <option value="2">Least time to go</option>
-                                            <option value="3">Interval-based scheduling</option>
-                                        </select>
+                                            <select ng-disabled="config.running" ng-model="config.algoritmo"
+                                                    class="form-control"
+                                                    style="font-size: 10px">
+                                                <option value="1">Round Robin</option>
+                                                <option value="2">Least time to go</option>
+                                                <option value="3">Interval-based scheduling</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Fim row -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group form-group">
+                                <!-- Fim row -->
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="input-group form-group">
                                 <span class="input-group-addon">
                                     <img src="resources/task.png" width="18" height="18">
                                     Processos
                                 </span>
-                                        <input ng-disabled="config.running" ng-model="config.processos"
-                                               class="form-control">
+                                            <input ng-disabled="config.running" ng-model="config.processos"
+                                                   class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group form-group" ng-hide="config.algoritmo !== '1'">
+                                    <div class="col-md-3">
+                                        <div class="input-group form-group" ng-hide="config.algoritmo !== '1'">
                                 <span class="input-group-addon">
                                     <img src="resources/quantum.png" width="18" height="18">
                                     Quantum (s)
                                 </span>
-                                        <input ng-model="config.quantum" class="form-control">
+                                            <input ng-model="config.quantum" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- Fim painel body-->
                     </div>
-                    <!-- Fim painel body-->
-                </div>
-                <!-- Fim painel de configuracao -->
+                    <!-- Fim painel de configuracao -->
 
-                <div class="row" style="margin-top:-10px; padding-bottom: 10px; margin-right: 0px">
-                    <div class="col-md-6">
-                        <button type="submit" target="#config" class="btn btn-primary">
-                            Iniciar
-                        </button>
-                        <a class="btn btn-danger" ng-click="parar()">Parar</a>
+                    <div class="row" style="margin-top:-10px; padding-bottom: 10px; margin-right: 0px">
+                        <div class="col-md-6">
+                            <button type="submit" target="#config" class="btn btn-primary">
+                                Iniciar
+                            </button>
+                            <a class="btn btn-danger" ng-click="parar()">Parar</a>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <!-- Fim formulario -->
         </div>
-        <!-- Fim formulario -->
-    </div>
-    <!-- Fim Topo -->
+        <!-- Fim Topo -->
 
-    <div class="row">
-        <div ng-show="config.processadores.length" style="height: 400px">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading" style="font-size: 12px">
-                        Processadores
+        <!-- Corpo de execucao -->
+        <div class="row">
+            <div ng-show="config.processadores.length" style="height: 400px">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="font-size: 12px">
+                            Processadores
+                        </div>
+                        <div class="panel-body processadores">
+                            <div ng-repeat="processador in config.processadores">
+                                <div class="row" ng-if="$index % 3 == 0"></div>
+                                <processador processador="processador"></processador>
+                            </div>
+                        </div>
                     </div>
-                    <div class="panel-body processadores">
-                        <div ng-repeat="processador in config.processadores">
-                            <div class="row" ng-if="$index % 3 == 0"></div>
-                            <processador processador="processador"></processador>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Uso dos processadores</div>
+                        <div class="panel-body">
+                            <canvas id="line" class="chart chart-line" chart-data="data"
+                                    chart-labels="labels" chart-legend="true" chart-series="series"
+                                    chart-click="onClick"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Uso dos processadores</div>
-                    <div class="panel-body">
-                        <canvas id="line" class="chart chart-line" chart-data="data"
-                                chart-labels="labels" chart-legend="true" chart-series="series"
-                                chart-click="onClick"></canvas>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
 
-    <!-- Inicio do container generico -->
-    <tabela titulo="Processos"></tabela>
-    <!-- Fim container generico -->
+        <!-- Inicio do container generico -->
+        <tabela titulo="Processos"></tabela>
+        <!-- Fim container generico -->
+    </div>
 </div>
 </body>
 </html>

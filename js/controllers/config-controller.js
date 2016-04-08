@@ -10,7 +10,7 @@ angular.module('so')
         $scope.timer;
 
         $scope.config = CommonFunctionsService.config;
-        
+
         //Observa a quantidade de cores que deve estar num intervalo de 1 a 64
         $scope.$watch(
             function () {
@@ -43,6 +43,10 @@ angular.module('so')
             $scope.config.processadores = [];
             $scope.series = [];
             $scope.data = [];
+
+            $scope.data.push($scope.config.processadorPrincipal.usage);
+            $scope.series.push("Uso Total");
+
             var i;
             for (i = 0; i < parseInt($scope.config.cores); i++) {
                 var processador = {
@@ -62,7 +66,7 @@ angular.module('so')
                 var lbls = $scope.labels;
                 lbls.shift();
                 lbls.push(lbls[lbls.length - 1] + 1);
-                $scope.data.forEach(function(data) {
+                $scope.data.forEach(function (data) {
                     data.shift();
                     data.push(data[4]);
                 })
@@ -76,6 +80,7 @@ angular.module('so')
             $scope.config.running = false;
             $rootScope.$broadcast('parar');
             $interval.cancel($scope.timer);
+            $scope.config.processadorPrincipal.usage = [0,0,0,0,0,0];
         };
 
         $rootScope.$on('parar', $scope.parar());

@@ -65,6 +65,9 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
                 apto.state = 'Executando';
                 cmService.increaseProcessorUsage(processador);
                 processador.decreaseTime = $interval(function () {
+                    if (!config.running) {
+                        $interval.cancel(processador.decreaseTime);
+                    }
                     if (processador.tempo && apto.tempo < apto.tempoTotal) {
                         if (processador.tempo - 1 > 0) {
                             processador.tempo -= 1;

@@ -11,7 +11,7 @@ so.config(function(ChartJsProvider) {
        scaleOverride : true,
        //** Required if scaleOverride is true **
        //Number - The number of steps in a hard coded scale
-       scaleSteps : 1,
+       scaleSteps : 2,
        //Number - The value jump in the hard coded scale
        scaleStepWidth : 10,
        //Number - The scale starting value

@@ -29,11 +29,11 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, 
             self: this,
 
             increaseProcessorUsage: function (processador) {
-                processador.usage[5] += 1;
+                //processador.usage[5] += 1;
                 $(this)[0].config.processadorPrincipal.usage[5] +=1;
             },
             decreaseProcessorUsage: function (processador) {
-                processador.usage[5] -= 1;
+                //processador.usage[5] -= 1;
                 $(this)[0].config.processadorPrincipal.usage[5] -=1;
             },
             stateClass: function (row, type) {
@@ -55,18 +55,7 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, 
                 return type + "-" + clazz;
             },
 
-            config: {
-                cores: 4,
-                algoritmo: "1",
-                quantum: 1,
-                processos: 1,
-                processadores: [],
-                running: false,
-                processadorPrincipal: {
-                    id: 'Principal',
-                    usage: [0,0,0,0,0,0]
-                }
-            },
+            config: new Configuration(),
             aptos: [],
             processos: [],
             headers: [],

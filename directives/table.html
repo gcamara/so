@@ -1,6 +1,6 @@
 <div class="animate-show" ng-hide="!config.running">
     <div class="panel panel-primary">
-        <div class="panel-heading" style="font-size: 12px">
+        <div class="panel-heading">
             Aptos
             <button id="aptosBtn" style="margin-top: 0px" collapse-button
                     class="btn btn-default pull-right glyphicon glyphicon-chevron-up btn-xs"
@@ -46,7 +46,7 @@
     </div>
 
     <div class="panel panel-primary">
-        <div class="panel-heading" style="font-size: 12px">
+        <div class="panel-heading" >
             {{titulo}}
             <span class="pull-right label label-info" style="font-size: 1em">Hora do Sistema: {{horaSistema()}}</span>
         </div>
@@ -74,7 +74,9 @@
                 </tr>
                 </tbody>
             </table>
+            <hr/>
+            <a class="btn btn-primary" style="margin-top: -10px; margin-right: 0px" ng-click="addProccess(true)">Adicionar</a>
         </div>
+
     </div>
-    <a class="btn btn-primary" style="margin-top: -10px; margin-right: 0px" ng-click="addProccess(true)">Adicionar</a>
 </div>

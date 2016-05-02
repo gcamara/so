@@ -130,4 +130,74 @@ angular.module('minhasDiretivas', [])
             },
             templateUrl: 'directives/progress.html'
         };
-    });
+    }).directive("containerPrincipal", function(CommonFunctionsService) {
+        return {
+            restrict: 'A',
+            controller: '',
+            link: function(scope, element, attrs, controller) {
+                scope.$watch(function() {
+                    return CommonFunctionsService.config.running;
+                }, function(newValue) {
+                    if (newValue) {
+                        element.removeClass('container');
+                        element.addClass('col-md-6');
+                    } else {
+                        element.removeClass('col-md-6');
+                        element.addClass('container');
+                    }
+                })
+            }
+        }
+}).directive('dhxGantt', function($rootScope) {
+    return {
+        restrict: 'A',
+        scope: false,
+        transclude: true,
+        template: '<div ng-transclude></div>',
+
+        link:function ($scope, $element, $attrs, $controller){
+            //watch data collection, reload on changes
+            var i = 0;
+            $scope.$watch($attrs.data, function(collection){
+                // gantt.clearAll();
+                // Evitar o digest
+                if (i < 2) {
+                    gantt.parse(collection, "json");
+                    i++;
+                }
+            }, true);
+
+            //size of gantt
+            // $scope.$watch(function() {
+            //     return $element[0].offsetWidth + "." + $element[0].offsetHeight;
+            // }, function() {
+            //     gantt.setSizes();
+            // });
+
+            $rootScope.$on('memoryConsumption', function(event, args) {
+                console.log(args.id+"|"+args.valor);
+                // console.log(gantt);
+                gantt.getTask(args.id).progress = args.valor;
+                gantt.updateTask(args.id);
+            });
+
+            var config = gantt.config;
+            config.show_grid = false;
+            config.grid_width = 0;
+            config.drag_lightbox =false;
+            config.drag_links = false;
+            config.drag_move = false;
+            config.drag_progress = false;
+            config.drag_resize = false;
+            config.readonly = true;
+            config.select_task = false;
+            config.show_errors = false;
+            config.show_links = false;
+            config.scale_height = 0;
+            config.row_height = 25;
+            //config.show_chart = false;
+            //init gantt
+            gantt.init($element[0]);
+        }
+    }
+});

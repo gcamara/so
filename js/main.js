@@ -31,3 +31,51 @@ var container = {
     } //Fim Fonte
 
 };
+
+function Processo(pid, horaExecucao, tempoTotal, active) {
+    this.startTime = 0;
+    this.endTime = 0;
+    this.pid = pid;
+    this.tempo = 0;
+    this.tempoTotal = tempoTotal;
+    this.processo = 'Processo '+pid;
+    this.executado = 0;
+    this.active = active;
+    this.memoria = new Memoria();
+    this.progress = 0;
+    this.horaExecucao = horaExecucao;
+    this.state = 'Pronto';
+    this.prioridade;
+}
+
+function Configuration() {
+    this.cores = 4;
+    this.algoritmo = "1";
+    this.quantum = 1;
+    this.processos = 1;
+    this.processadores = [];
+    this.running = false;
+    this.processadorPrincipal = {
+        id: 'Principal',
+        usage: [0,0,0,0,0,0],
+        estado: 'Pronto'
+    }
+    this.memoria = new Memoria();
+}
+
+
+function Memoria() {
+    this.consumo = 0;
+    this.total = 512;
+    this.algoritmo = "1";
+
+    Memoria.prototype.aumentarConsumo = function(consumo) {
+        this.consumo += consumo;
+    }
+
+    Memoria.prototype.diminuirConsumo = function(consumo) {
+        this.aumentarConsumo(consumo*-1);
+    }
+
+
+}

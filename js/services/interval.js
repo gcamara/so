@@ -23,21 +23,6 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
         });
     }
 
-    function Processo() {
-        this.startTime = 0;
-        this.endTime = 0;
-        this.pid = 0;
-        this.tempo = 0;
-        this.tempoTotal = 0;
-        this.processo = '';
-        this.executado = 0;
-        this.active = false;
-
-        Processo.prototype.toString = function () {
-            return "Processo " + this.pid;
-        }
-    }
-
     interval.criarProcessos = function () {
         interval.cmService.processos = [];
         for (var i = 0; i < interval.config.processos; i++) {
@@ -224,14 +209,10 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
         var tempoTotal = time.getTime() - new Date().getTime();
         tempoTotal /= 1000;
 
-        var processo = new Processo();
+        //pid, horaExecucao, tempoTotal, active
+        var processo = new Processo(i, undefined, tempoTotal, active);
         processo.startTime = time;
         processo.endTime = timeChanged;
-        processo.processo = 'Processo ' + i;
-        processo.pid = i;
-        processo.state = 'Pronto';
-        processo.tempoTotal = tempoTotal;
-        processo.active = active;
 
         interval.cmService.processos.push(processo);
         interval.processadores[0].aptos.push(processo);

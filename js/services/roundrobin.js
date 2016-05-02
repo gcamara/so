@@ -52,52 +52,54 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
 
                 var pct;
 
-                processador.estado = 'Executando';
-                processador.processo = apto;
+                if (processador) {
+                    processador.estado = 'Executando';
+                    processador.processo = apto;
 
-                // Quantum aleatorio de acordo com a prioridade
-                // Porem a fila 0 tem maior prioridade
-                processador.tempo = parseInt(quantum) + (3 - apto.prioridade);
+                    // Quantum aleatorio de acordo com a prioridade
+                    // Porem a fila 0 tem maior prioridade
+                    processador.tempo = parseInt(quantum) + (3 - apto.prioridade);
 
-                if (processador.decreaseTime) {
-                    $interval.cancel(processador.decreaseTime);
-                }
-                apto.state = 'Executando';
-                cmService.increaseProcessorUsage(processador);
-                processador.decreaseTime = $interval(function () {
-                    if (!config.running) {
+                    if (processador.decreaseTime) {
                         $interval.cancel(processador.decreaseTime);
                     }
-                    if (processador.tempo && apto.tempo < apto.tempoTotal) {
-                        if (processador.tempo - 1 > 0) {
-                            processador.tempo -= 1;
+                    apto.state = 'Executando';
+                    cmService.increaseProcessorUsage(processador);
+                    processador.decreaseTime = $interval(function () {
+                        if (!config.running) {
+                            $interval.cancel(processador.decreaseTime);
+                        }
+                        if (processador.tempo && apto.tempo < apto.tempoTotal) {
+                            if (processador.tempo - 1 > 0) {
+                                processador.tempo -= 1;
+                            } else {
+                                processador.tempo = 0;
+                            }
+
+                            apto.tempo += 1;
+                            pct = (apto.tempo / apto.tempoTotal) * 100;
+                            apto.progress = Math.floor(pct);
                         } else {
+                            cmService.decreaseProcessorUsage(processador);
+                            processador.estado = 'Parado';
+                            $interval.cancel(processador.decreaseTime);
+                            processador.processo = undefined;
+                            roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
                             processador.tempo = 0;
-                        }
 
-                        apto.tempo += 1;
-                        pct = (apto.tempo / apto.tempoTotal) * 100;
-                        apto.progress = Math.floor(pct);
-                    } else {
-                        cmService.decreaseProcessorUsage(processador);
-                        processador.estado = 'Parado';
-                        $interval.cancel(processador.decreaseTime);
-                        processador.processo = undefined;
-                        roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
-                        processador.tempo = 0;
-
-                        //Caso ainda haja tempo, volta pra fila de aptos
-                        if (apto.tempo < apto.tempoTotal) {
-                            apto.state = 'Aguardando';
-                            roundrobin.aptos[apto.prioridade].push(apto);
-                        } else {
-                            apto.progress = 100;
-                            apto.state = 'Concluido';
+                            //Caso ainda haja tempo, volta pra fila de aptos
+                            if (apto.tempo < apto.tempoTotal) {
+                                apto.state = 'Aguardando';
+                                roundrobin.aptos[apto.prioridade].push(apto);
+                            } else {
+                                apto.progress = 100;
+                                apto.state = 'Concluido';
+                            }
+                            $rootScope.$broadcast('BuscarProximo');
                         }
-                        $rootScope.$broadcast('BuscarProximo');
-                    }
-                    $rootScope.$broadcast('aptoMudou', {'apto': apto});
-                }, 1000);
+                        $rootScope.$broadcast('aptoMudou', {'apto': apto});
+                    }, 1000);
+                }
             }
         }
 
@@ -150,16 +152,11 @@ so.factory('RoundRobinService', function ($interval, $rootScope, CommonFunctions
         var prioridade = container.random(0, 3);
 
         var pid = CommonFunctionsService.processos.length;
-        var proc = {
-            pid: pid,
-            processo: "Processo " + pid,
-            progress: 0,
-            state: 'Pronto',
-            prioridade: prioridade,
-            tempo: 0,
-            tempoTotal: container.random(4, 20),
-            active: active
-        };
+        var tempoTotal = container.random(4, 20);
+        
+        //pid, horaExecucao, tempoTotal, active
+        var proc = new Processo(pid, undefined, tempoTotal, active);
+        proc.prioridade = prioridade;
 
         roundrobin.aptos[prioridade].push(proc);
         CommonFunctionsService.processos.push(proc);

@@ -40,16 +40,8 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             var data = new Date();
             data.setSeconds(data.getSeconds() + buscarTempo);
 
-            var proc = {
-                pid: pid,
-                processo: "Processo " + pid,
-                progress: 0,
-                state: 'Pronto',
-                horaExecucao: data,
-                active: active,
-                tempoTotal: tempo,
-                tempo: 0
-            };
+            //pid, horaExecucao, tempoTotal, active
+            var proc = new Processo(pid, data, tempo, active);
 
             this.aptos.push(proc);
 

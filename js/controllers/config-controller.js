@@ -9,8 +9,9 @@ angular.module('so')
         $scope.data = [];
         $scope.timer;
 
-        $scope.config = CommonFunctionsService.config;
 
+        $scope.config = CommonFunctionsService.config;
+        $scope.config.tasks = gerarDados();
         //Observa a quantidade de cores que deve estar num intervalo de 1 a 64
         $scope.$watch(
             function () {
@@ -45,7 +46,7 @@ angular.module('so')
             $scope.data = [];
 
             $scope.data.push($scope.config.processadorPrincipal.usage);
-            $scope.series.push("Uso Total");
+            $scope.series.push("Consumo de Processador");
 
             var i;
             for (i = 0; i < parseInt($scope.config.cores); i++) {
@@ -57,9 +58,6 @@ angular.module('so')
                     usage: [0, 0, 0, 0, 0, 0]
                 };
                 $scope.config.processadores.push(processador);
-
-                $scope.series.push("Processador " + i);
-                $scope.data.push(processador.usage);
             }
 
             $scope.timer = $interval(function () {
@@ -80,8 +78,30 @@ angular.module('so')
             $scope.config.running = false;
             $rootScope.$broadcast('parar');
             $interval.cancel($scope.timer);
-            $scope.config.processadorPrincipal.usage = [0,0,0,0,0,0];
+            $scope.config.processadorPrincipal.usage = [0, 0, 0, 0, 0, 0];
         };
 
         $rootScope.$on('parar', $scope.parar());
+
+
+        function gerarDados() {
+            dados = {data: []};
+
+            var dataHoje = new Date();
+            for (var j = 0; j < 10; j++) {
+                for (var i = 0; i < 11; i++) {
+                    var dado = {
+                        id: dados.data.length+1,
+                        text: "",
+                        start_date: dataHoje.getDate() + "/" + (dataHoje.getMonth() + 1) + "/" + dataHoje.getFullYear() + " 00:00:00",
+                        duration: 1,
+                        progress: 0
+                    };
+                    dados.data.push(dado);
+                }
+                dataHoje.setDate(dataHoje.getDate() + 1);
+            }
+
+            return dados;
+        }
     });

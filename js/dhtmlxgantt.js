@@ -993,7 +993,7 @@ gantt = {version: "4.0.0"}, gantt.event = function (t, e, n) {
     }
 }, gantt._update_layout_sizes = function () {
     var t = this._tasks;
-    t.bar_height = this._get_task_height(), this.$task_data.style.height = Math.max(this.$task.offsetHeight - this.config.scale_height, 0) + "px", gantt.config.smart_rendering ? this.$task_bg.style.height = "250px" : this.$task_bg.style.height = "", this.$task_bg.style.backgroundImage = "";
+    t.bar_height = this._get_task_height(), this.$task_data.style.height = Math.max(this.$task.offsetHeight - this.config.scale_height, 0) + "px", gantt.config.smart_rendering ? this.$task_bg.style.height = "250px" : this.$task_bg.style.height = "250px", this.$task_bg.style.backgroundImage = "";
     for (var e = this.$task_data.childNodes, n = 0, a = e.length; a > n; n++) {
         var i = e[n];
         this._is_layer(i) && i.style && (i.style.width = t.full_width + "px")

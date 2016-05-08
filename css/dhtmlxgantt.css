@@ -144,7 +144,8 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
     font-size: 13px;
     border: 1px solid #cecece;
     position: relative;
-    white-space: nowrap
+    white-space: nowrap;
+    height: 100%;
 }
 
 .gantt_grid {
@@ -156,7 +157,8 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
 }
 
 .gantt_task {
-    position: relative
+    position: relative;
+    width: 100%;
 }
 
 .gantt_grid, .gantt_task {
@@ -317,7 +319,8 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
 }
 
 .gantt_task_bg {
-    overflow: hidden
+    overflow: hidden;
+    margin-top: 30px;
 }
 
 .gantt_scale_cell {
@@ -356,8 +359,6 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
     background-color: transparent;
     width: 100%;
     clear: both;
-    overflow-x: scroll;
-    overflow-y: hidden;
     display: none
 }
 

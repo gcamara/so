@@ -92,7 +92,7 @@ angular.module('so')
                 for (var i = 0; i < 11; i++) {
                     var dado = {
                         id: dados.data.length+1,
-                        text: "",
+                        text: $scope.config.memoria.total/100 +"kB",
                         start_date: dataHoje.getDate() + "/" + (dataHoje.getMonth() + 1) + "/" + dataHoje.getFullYear() + " 00:00:00",
                         duration: 1,
                         progress: 0

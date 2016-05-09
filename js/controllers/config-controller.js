@@ -11,7 +11,8 @@ angular.module('so')
 
 
         $scope.config = CommonFunctionsService.config;
-        $scope.config.tasks = gerarDados();
+        $scope.config.tasks;
+
         //Observa a quantidade de cores que deve estar num intervalo de 1 a 64
         $scope.$watch(
             function () {
@@ -69,6 +70,7 @@ angular.module('so')
                     data.push(data[4]);
                 })
             }, 1000);
+            $scope.config.tasks = gerarDados();
             $scope.config.running = true;
             $rootScope.$broadcast('iniciar');
         };
@@ -89,7 +91,7 @@ angular.module('so')
 
             var dataHoje = new Date();
             for (var j = 0; j < 10; j++) {
-                for (var i = 0; i < 11; i++) {
+                for (var i = 0; i < 10; i++) {
                     var dado = {
                         id: dados.data.length+1,
                         text: $scope.config.memoria.total/100 +"kB",

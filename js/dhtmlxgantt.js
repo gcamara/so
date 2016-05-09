@@ -684,7 +684,7 @@ gantt = {version: "4.0.0"}, gantt.event = function (t, e, n) {
         return n = e.x < t.x ? this.dirs.left : e.x > t.x ? this.dirs.right : e.y > t.y ? this.dirs.down : this.dirs.up;
     }
 }, gantt._y_from_ind = function (t) {
-    return t * gantt.config.row_height
+    return t%10 * gantt.config.row_height
 }, gantt._path_builder = {
     path: [], clear: function () {
         this.path = []
@@ -1109,7 +1109,7 @@ gantt = {version: "4.0.0"}, gantt.event = function (t, e, n) {
 }, gantt.getTaskPosition = function (t, e, n) {
     var a = this.posFromDate(e || t.start_date), i = this.posFromDate(n || t.end_date);
     i = Math.max(a, i);
-    var s = this.getTaskTop(t.id%10), r = gantt._get_task_height();
+    var s = this.getTaskTop(t.id), r = gantt._get_task_height();
     console.log(s);
     return {left: a, top: s, height: r, width: Math.max(i - a, 0)}
 }, gantt._get_task_width = function (t, e, n) {
@@ -1222,7 +1222,7 @@ gantt = {version: "4.0.0"}, gantt.event = function (t, e, n) {
     e = e !== !1, n = n || 0;
     var a = this._get_safe_type(t.type) == this.config.types.milestone, i = null;
     i = e || a ? t.start_date || this._default_task_date(t) : t.end_date || this.calculateEndDate(this._default_task_date(t));
-    var s = this.posFromDate(i), r = this.getTaskTop(t.id%10);
+    var s = this.posFromDate(i), r = this.getTaskTop(t.id);
     return a && (e ? s -= n : s += n), {x: s, y: r}
 },gantt._get_task_pos = function (t, e) {
     e = e !== !1;

@@ -320,7 +320,6 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
 
 .gantt_task_bg {
     overflow: hidden;
-    margin-top: 30px;
 }
 
 .gantt_scale_cell {
@@ -639,7 +638,6 @@ div.dhx_modal_cover {
 }
 
 .gantt_data_area {
-    position: relative;
     -moz-user-select: -moz-none;
     -webkit-user-select: none;
     -user-select: none

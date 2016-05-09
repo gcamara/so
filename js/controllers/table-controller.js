@@ -81,7 +81,7 @@ angular.module('so')
                 $scope.$parent.parar();
             }
 
-            var lastData = 9;
+            var lastData = 10;
             var ultimaColuna = 1;
             $scope.updateValues = $interval(function () {
                 var tasks = cmService.config.tasks;
@@ -99,7 +99,7 @@ angular.module('so')
                         lastData -= 1;
                         tasks.data[lastData].progress = "0";
                         if (lastData < (ultimaColuna * 10)-9) {
-                            lastData = (ultimaColuna * 10) + 9
+                            lastData = (ultimaColuna * 10) + 10
                             ultimaColuna += 1;
                         }
                     }

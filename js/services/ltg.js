@@ -1,28 +1,29 @@
 /**
  * Created by Gabriel on 12/03/2016.
  */
-so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval) {
+(function() {
+    so.factory('LTGService', ['$rootScope', 'CommonFunctionsService', '$interval', 'LogService', LTGService]);
 
-    function LTGService() {
+    function LTGService($rootScope, service, $interval, logger) {
+        const NAME = "LTG";
         var self = this;
 
         $rootScope.$on('parar', function () {
-            CommonFunctionsService.processos.length = 0;
+            service.processos.length = 0;
             self.configurar();
         });
 
-        this.config = CommonFunctionsService.config;
+        this.config = service.config;
         this.aptos = [];
         this.processos = 0;
         this.processadores = [];
 
-        this.cmService = CommonFunctionsService;
         this.buscarTempo = function () {
             return container.random(4, 20);
         };
 
         this.configurar = function () {
-            this.cmService.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Deadline', 'ETC(s)'];
+            service.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Deadline', 'ETC(s)'];
 
             //Restar propriedades
             aptos = [];
@@ -34,7 +35,8 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
         }
 
         this.criarProcesso = function (active) {
-            var pid = this.cmService.processos.length;
+            var memoriaProcesso = container.random(32, 1024);
+            var pid = service.processos.length;
             var buscarTempo = this.buscarTempo();
             var tempo = buscarTempo;
             var data = new Date();
@@ -42,17 +44,17 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
 
             //pid, horaExecucao, tempoTotal, active
             var proc = new Processo(pid, data, tempo, active);
-
+            this.config.memoria.algoritmo.buscarMemoria(proc, memoriaProcesso);
             this.aptos.push(proc);
+            logger.procInfo(NAME, 'Criado processo ' + proc.pid);
 
             //Ordena os elementos
-            this.cmService.insertionSort(this.aptos);
+            logger.procInfo(NAME, 'Ordenando elementos');
+            service.insertionSort(this.aptos);
             this.processos.push(proc);
-            this.cmService.insertionSort(this.processos);
+            service.insertionSort(this.processos);
 
             this.countDown(proc);
-
-            console.log("processo: "+this.processos.indexOf(proc));
         }
 
         $rootScope.$watch(function () {
@@ -94,17 +96,21 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
         }
 
         var abortaProcesso = function (processo, execFunction, aptos) {
+            logger.procError('Abortando processo ' + processo.pid);
             processo.state = 'Abortado';
             $interval.cancel(execFunction)
             aptos.splice(aptos.indexOf(processo), 1);
+            processo.limparBlocos(service);
+            logger.memoryInfo(NAME, 'Limpando blocos do processo ' + processo.pid);
+
         }
 
         this.criaProcessos = function () {
-            this.cmService.processos.length = 0;
+            service.processos.length = 0;
             this.aptos.length = 0;
             var i;
 
-            for (i = 0; i < parseInt(this.cmService.config.processos); i++) {
+            for (i = 0; i < parseInt(service.config.processos); i++) {
                 this.criarProcesso(false);
             }
         }
@@ -131,6 +137,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
                         processo.progress = 100;
                         processador.processo = undefined;
                         processo.state = 'Concluido';
+                        processo.limparBlocos(service);
                         $rootScope.$broadcast('aptoMudou', {'apto': processo, 'lastState': '-info'});
                         this.processadores.splice(processador.id, 0, processador);
                         self.cmService.decreaseProcessorUsage(processador);
@@ -171,8 +178,7 @@ so.factory('LTGService', function ($rootScope, CommonFunctionsService, $interval
             this.criaProcessos();
             this.executarTodos();
         }
-    }
 
-    return new LTGService();
-})
-;
+        return self;
+    }
+})();

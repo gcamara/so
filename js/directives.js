@@ -130,61 +130,54 @@ angular.module('minhasDiretivas', [])
             },
             templateUrl: 'directives/progress.html'
         };
-    }).directive("containerPrincipal", function(CommonFunctionsService) {
-        return {
-            restrict: 'A',
-            controller: '',
-            link: function(scope, element, attrs, controller) {
-                scope.$watch(function() {
-                    return CommonFunctionsService.config.running;
-                }, function(newValue) {
-                    if (newValue) {
-                        element.removeClass('container');
-                        element.addClass('col-md-6');
-                    } else {
-                        element.removeClass('col-md-6');
-                        element.addClass('container');
-                    }
-                })
-            }
+    }).directive("containerPrincipal", function (CommonFunctionsService) {
+    return {
+        restrict: 'A',
+        controller: '',
+        link: function (scope, element, attrs, controller) {
+            scope.$watch(function () {
+                return CommonFunctionsService.config.running;
+            }, function (newValue) {
+                if (newValue) {
+                    element.removeClass('container');
+                    element.addClass('col-md-6');
+                } else {
+                    element.removeClass('col-md-6');
+                    element.addClass('container');
+                }
+            })
         }
-}).directive('dhxGantt', function($rootScope) {
+    }
+}).directive('dhxGantt', function ($rootScope) {
     return {
         restrict: 'A',
         scope: false,
         transclude: true,
         template: '<div ng-transclude></div>',
 
-        link:function ($scope, $element, $attrs, $controller){
+        link: function ($scope, $element, $attrs, $controller) {
             //watch data collection, reload on changes
             var i = 0;
-            $scope.$watch($attrs.data, function(collection){
+            $scope.$watch($attrs.data, function (collection) {
                 // gantt.clearAll();
-                // Evitar o digest
-                if (i < 2) {
+                if (collection) {
                     gantt.parse(collection, "json");
-                    i++;
                 }
             }, true);
 
-            //size of gantt
-            // $scope.$watch(function() {
-            //     return $element[0].offsetWidth + "." + $element[0].offsetHeight;
-            // }, function() {
-            //     gantt.setSizes();
-            // });
 
-            $rootScope.$on('memoryConsumption', function(event, args) {
-                console.log(args.id+"|"+args.valor);
-                // console.log(gantt);
-                gantt.getTask(args.id).progress = args.valor;
-                gantt.updateTask(args.id);
+            $rootScope.$on('memoryConsumption', function (event, args) {
+                var task = gantt.getTask(args.id);
+                if (task) {
+                    task.progress = args.valor;
+                    gantt.updateTask(args.id);
+                }
             });
 
             var config = gantt.config;
             config.show_grid = false;
             config.grid_width = 0;
-            config.drag_lightbox =false;
+            config.drag_lightbox = false;
             config.drag_links = false;
             config.drag_move = false;
             config.drag_progress = false;
@@ -201,3 +194,18 @@ angular.module('minhasDiretivas', [])
         }
     }
 });
+
+so.directive('console', ['CommonFunctionsService', '$interval', DirectiveConsole]);
+
+function DirectiveConsole(service, interval) {
+    var self =this;
+    self.restrict = "E";
+    self.transclude = true;
+    self.template = '<div class="col-md-12" style="margin-left: 10px; width: 98%; height: 250px; overflow: auto"><ng-transclude></ng-transclude></div>'
+    self.link = link;
+
+    function link(scope, element) {
+        interval(function() { element[0].firstChild.scrollTop += 30 }, 100);
+    }
+    return self;
+}

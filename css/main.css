@@ -11,6 +11,14 @@ thead, tbody, tr, td, th {
     display: block;
 }
 
+.gantt_task_progress {
+    max-width: 63px;
+}
+
+.mensagem-error {
+    color: red;
+}
+
 table > thead > tr > th:first-child {
     width: 50px !important;
 }

@@ -684,7 +684,7 @@ gantt = {version: "4.0.0"}, gantt.event = function (t, e, n) {
         return n = e.x < t.x ? this.dirs.left : e.x > t.x ? this.dirs.right : e.y > t.y ? this.dirs.down : this.dirs.up;
     }
 }, gantt._y_from_ind = function (t) {
-    return t%10 * gantt.config.row_height
+    return 225 - ((t%10) * gantt.config.row_height)
 }, gantt._path_builder = {
     path: [], clear: function () {
         this.path = []
@@ -1110,7 +1110,6 @@ gantt = {version: "4.0.0"}, gantt.event = function (t, e, n) {
     var a = this.posFromDate(e || t.start_date), i = this.posFromDate(n || t.end_date);
     i = Math.max(a, i);
     var s = this.getTaskTop(t.id), r = gantt._get_task_height();
-    console.log(s);
     return {left: a, top: s, height: r, width: Math.max(i - a, 0)}
 }, gantt._get_task_width = function (t, e, n) {
     return Math.round(this._get_task_pos(t, !1).x - this._get_task_pos(t, !0).x);
@@ -1394,7 +1393,7 @@ gantt.removeLinkLayer = function (t) {
     }
 },gantt.json = {
     parse: function (t) {
-        return gantt.assert(t, "Invalid data"), "string" == typeof t && (window.JSON ? t = JSON.parse(t) : gantt.assert(!1, "JSON is not supported")), t.dhx_security && (gantt.security_key = t.dhx_security), t
+        return gantt.assert(t, "Invalid data"), "string" == typeof t && (window.JSON ? t = JSON.parse(t) : gantt.assert(!1, "JSON is not supported")), t
     }, _copyLink: function (t) {
         var e = {};
         for (var n in t)e[n] = t[n];

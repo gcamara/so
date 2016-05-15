@@ -29,12 +29,10 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, 
             self: this,
 
             increaseProcessorUsage: function (processador) {
-                //processador.usage[5] += 1;
-                $(this)[0].config.processadorPrincipal.usage[5] +=1;
+                $(this)[0].config.processadorPrincipal.usage[5] += 1;
             },
             decreaseProcessorUsage: function (processador) {
-                //processador.usage[5] -= 1;
-                $(this)[0].config.processadorPrincipal.usage[5] -=1;
+                $(this)[0].config.processadorPrincipal.usage[5] -= 1;
             },
             stateClass: function (row, type) {
                 var clazz = '';
@@ -85,3 +83,47 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, 
             }
         };
     });
+
+so.factory('LogService', ['CommonFunctionsService', LogService]);
+
+function LogService(service) {
+    var self = this;
+    self.log = function (tipo, categoria, serviceType, msg) {
+        service.config.console.log.push({
+            id: service.config.console.log.length,
+            tipo: tipo,
+            msg: construirMensagem(tipo, serviceType, msg),
+            categoria: categoria
+        });
+    }
+    self.error = function(categoria, service, msg) {
+        self.log('ERROR', categoria, service, msg);
+    }
+    self.info = function(categoria, service, msg) {
+        self.log('INFO', categoria, service, msg);
+    }
+    self.memoryError = function (service, msg) {
+        self.error('Memoria', service, msg);
+    }
+    self.memoryInfo = function (service, msg) {
+        self.info('Memoria', service, msg);
+    }
+    self.procError = function (service, msg) {
+        self.error('Processo', service, msg);
+    }
+    self.procInfo = function (service, msg) {
+        self.info('Processo', service, msg);
+    }
+    self.sysError = function (msg) {
+        self.error('Sistema', 'MAIN', msg);
+    }
+    self.sysInfo = function (msg) {
+        self.info('Sistema', 'MAIN', msg);
+    }
+
+    var construirMensagem = function (tipo, serviceType, msg) {
+        var timestamp = service.formatHours(new Date());
+        return "[" + timestamp + " | " + serviceType + " | " + tipo + "]: " + msg;
+    }
+    return self;
+}

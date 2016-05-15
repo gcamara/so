@@ -18,7 +18,11 @@
     <script src="js/services/interval.js"></script>
     <script src="js/services/roundrobin.js"></script>
     <script src="js/services/ltg.js"></script>
+
+    <!-- Memoria -->
+    <script src="js/services/memory/bestfit.js"></script>
     <script src="js/services/services.js"></script>
+
     <!-- Controllers é o ultimo, pois os algoritmos tem que ser carregados antes de serem injetados -->
     <script src="js/controllers/config-controller.js"></script>
     <script src="js/controllers/table-controller.js"></script>
@@ -49,8 +53,8 @@
         </div>
     </div>
 </div>
-<div class="row" style="margin-top: 60px">
-    <div container-principal style="padding: 20px">
+<div class="row" style="margin-top: 60px; margin-left: 20px; margin-right: 20px;">
+    <div container-principal style="padding-top: 20px; ">
         <div class="row">
             <div class="col-md-12">
                 <form novalidate name="configuracoes" ng-submit="criarProcessadores()">
@@ -115,7 +119,7 @@
                                     <img src="resources/code.png" width="18" height="18">
                                     Algoritmo
                                 </span>
-                                            <select ng-disabled="config.running" ng-model="config.memoria.algoritmo"
+                                            <select ng-disabled="config.running" ng-model="config.memoria.algoritmo.id"
                                                     class="form-control"
                                                     style="font-size: 10px">
                                                 <option value="1">Best Fit</option>
@@ -177,7 +181,7 @@
         <!-- Fim container generico -->
     </div>
     <div id="recursos" ng-class="{ 'show': config.running }" class="col-md-6" ng-show="config.processadores.length"
-         style="padding: 20px; height: 100%">
+         style="padding-top: 20px; height: 100%">
         <div class="panel panel-default">
             <div class="panel-heading">Recursos</div>
             <div class="panel-body">
@@ -192,13 +196,36 @@
                     <div class="col-md-12">
                         <h4>Memória</h4>
                         <hr/>
-                        Tamanho: {{config.memoria.total}}kB | Consumo: {{config.memoria.consumo}}kB
+                        Tamanho: {{config.memoria.total}}kB | Consumo: {{(config.memoria.consumo/1024).toFixed(2)}}kB
                         <div dhx-gantt data="config.tasks" style="height:250px; width:100%">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div id="console" ng-init="search.categoria = 'Memoria'">
+            <div class="panel panel-default">
+                <div class="panel-heading">Console</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="nav nav-tabs">
+                                <li><a data-toggle="tab" ng-click="search.categoria = 'Sistema'" href="#">Sistema</a></li>
+                                <li><a data-toggle="tab" href="#" ng-click="search.categoria = 'Processo'">Processos</a></li>
+                                <li class="active"><a data-toggle="tab" ng-click="search.categoria = 'Memoria'" href="#">Memoria</a></li>
+                            </ul>
+                        </div>
+                        <console>
+                            <div class="row" ng-repeat="log in config.console.log | filter:search"
+                                 ng-class="{'mensagem-error': log.tipo === 'ERROR'}">{{log.msg}}
+                            </div>
+                        </console>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 </body>
 </html>

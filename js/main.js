@@ -46,6 +46,14 @@ function Processo(pid, horaExecucao, tempoTotal, active) {
     this.horaExecucao = horaExecucao;
     this.state = 'Pronto';
     this.prioridade;
+    this.blocos = [];
+    Processo.prototype.limparBlocos = function(service) {
+        this.blocos.forEach(function (objetoBloco) {
+            var bloco = objetoBloco.bloco;
+            bloco.progress -= objetoBloco.ocupa;
+            service.config.memoria.diminuirConsumo(objetoBloco.uso);
+        });
+    }
 }
 
 function Configuration() {
@@ -61,15 +69,20 @@ function Configuration() {
         estado: 'Pronto'
     }
     this.memoria = new Memoria();
+    this.console = new Console();
 }
 
 
 function Memoria() {
     this.consumo = 0;
-    this.total = 512;
-    this.algoritmo = "1";
+    this.total = 0.1;
+    this.algoritmo;
+    this.data = {data: []};
 
     Memoria.prototype.aumentarConsumo = function(consumo) {
+        if (this.total*1024 - this.consumo - consumo < 0) {
+            throw "Sem memoria livre";
+        }
         this.consumo += consumo;
     }
 
@@ -77,5 +90,26 @@ function Memoria() {
         this.aumentarConsumo(consumo*-1);
     }
 
+    Memoria.prototype.memoriaLivre = function() {
+        return (this.total*1024 - this.consumo)*1024//memoria em bytes;
+    }
 
+    /**
+     * Tamanho do bloco em bytes
+     * @returns {number}
+     */
+    Memoria.prototype.tamanhoBloco = function() {
+        return (this.total / 100)*1024;
+    }
+
+    Memoria.prototype.avisarConsumo = function($rootScope, bloco) {
+        $rootScope.$broadcast('memoryConsumption', {
+            id: bloco.id,
+            valor: bloco.progress
+        });
+    }
+}
+
+function Console() {
+    this.log = [];
 }

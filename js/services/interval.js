@@ -177,6 +177,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                         processo.progress = 100;
 
                         processo.state = 'Concluido';
+                        processo.limparBlocos(interval.cmService);
                         processador.processo = undefined;
                         $interval.cancel(processador.decreaseTime);
                         interval.cmService.decreaseProcessorUsage(processador);
@@ -211,6 +212,8 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
 
         //pid, horaExecucao, tempoTotal, active
         var processo = new Processo(i, undefined, tempoTotal, active);
+        var memoriaProcesso = container.random(32, 1024);
+        this.config.memoria.algoritmo.buscarMemoria(proc,memoriaProcesso);
         processo.startTime = time;
         processo.endTime = timeChanged;
 

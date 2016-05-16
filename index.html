@@ -206,14 +206,22 @@
 
         <div id="console" ng-init="search.categoria = 'Memoria'">
             <div class="panel panel-default">
-                <div class="panel-heading">Console</div>
+                <div class="panel-heading">
+                    Console
+                    <a class="pull-right" style="font-size: .9em"
+                           ng-click="config.console.log.length = 0" alt="Limpar tudo"><i
+                        class="glyphicon glyphicon-trash"></i></a>
+                </div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
                             <ul class="nav nav-tabs">
-                                <li><a data-toggle="tab" ng-click="search.categoria = 'Sistema'" href="#">Sistema</a></li>
-                                <li><a data-toggle="tab" href="#" ng-click="search.categoria = 'Processo'">Processos</a></li>
-                                <li class="active"><a data-toggle="tab" ng-click="search.categoria = 'Memoria'" href="#">Memoria</a></li>
+                                <li><a data-toggle="tab" ng-click="search.categoria = 'Sistema'" href="#">Sistema</a>
+                                </li>
+                                <li><a data-toggle="tab" href="#" ng-click="search.categoria = 'Processo'">Processos</a>
+                                </li>
+                                <li class="active"><a data-toggle="tab" ng-click="search.categoria = 'Memoria'"
+                                                      href="#">Memoria</a></li>
                             </ul>
                         </div>
                         <console>

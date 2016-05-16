@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="12ddc274-ef1c-4378-b693-035386e2a6b3" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/services/memory/bestfit.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/services/memory/mergefit.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/main.css" afterPath="$PROJECT_DIR$/css/main.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/controllers/config-controller.js" afterPath="$PROJECT_DIR$/js/controllers/config-controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/controllers/table-controller.js" afterPath="$PROJECT_DIR$/js/controllers/table-controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/dhtmlxgantt.js" afterPath="$PROJECT_DIR$/js/dhtmlxgantt.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/directives.js" afterPath="$PROJECT_DIR$/js/directives.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/main.js" afterPath="$PROJECT_DIR$/js/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/services/interval.js" afterPath="$PROJECT_DIR$/js/services/interval.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/services/ltg.js" afterPath="$PROJECT_DIR$/js/services/ltg.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/services/roundrobin.js" afterPath="$PROJECT_DIR$/js/services/roundrobin.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/services/services.js" afterPath="$PROJECT_DIR$/js/services/services.js" />
     </list>
     <ignored path="Sistemas Operacionais.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -72,7 +60,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="roundrobin.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="roundrobin.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/services/roundrobin.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="494">
@@ -94,11 +82,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="466">
-              <caret line="190" column="29" selection-start-line="190" selection-start-column="29" selection-end-line="190" selection-end-column="29" />
+            <state relative-caret-position="207">
+              <caret line="210" column="23" selection-start-line="210" selection-start-column="23" selection-end-line="210" selection-end-column="23" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -115,6 +103,7 @@
                 <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#a#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -216,10 +205,10 @@
         <option value="$PROJECT_DIR$/js/services/memory/bestfit.js" />
         <option value="$PROJECT_DIR$/js/services/memory/mergefit.js" />
         <option value="$PROJECT_DIR$/js/services/services.js" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/dhtmlxgantt.js" />
         <option value="$PROJECT_DIR$/js/directives.js" />
         <option value="$PROJECT_DIR$/js/services/roundrobin.js" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
@@ -278,20 +267,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="SO" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="so" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SO" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -518,12 +493,12 @@
       <workItem from="1461847206726" duration="31992000" />
       <workItem from="1462653052050" duration="1816000" />
       <workItem from="1462712238816" duration="14152000" />
-      <workItem from="1463314535672" duration="25027000" />
+      <workItem from="1463314535672" duration="27320000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="147378000" />
+    <option name="totallyTimeSpent" value="149671000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1932" height="1056" extended-state="0" />
@@ -940,30 +915,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="466">
-          <caret line="190" column="29" selection-start-line="190" selection-start-column="29" selection-end-line="190" selection-end-column="29" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#div#0;n#div#0;n#div#2;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/dhtmlxgantt.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
@@ -1010,6 +961,31 @@
         <state relative-caret-position="494">
           <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="210" column="23" selection-start-line="210" selection-start-column="23" selection-end-line="210" selection-end-column="23" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#div#0;n#div#0;n#div#2;n#div#0;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#div#0;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

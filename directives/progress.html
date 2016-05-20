@@ -1,5 +1,5 @@
 <div class="progress">
-    <div state-element apto="row" tipo="progress-bar" class="progress-bar progress-bar-info progress-bar-striped"
+    <div ng-class="getClass(row, 'progress-bar')" class="progress-bar progress-bar-striped"
          style="font-size: 10px" ng-style="setWidth()"><span>{{row.progress ? row.progress : 0}}%</span>
     </div>
 </div>

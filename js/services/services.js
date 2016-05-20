@@ -1,32 +1,40 @@
 /**
  * Created by Gabriel on 08/03/2016.
  */
+so.factory('CommonFunctionsService', ['$injector', '$rootScope', CommonService]);
 
-so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, IntervalBasedService) {
-        var algoritmo = {};
-
-
-        algoritmo.construirAlgoritmo = function (tipo) {
-            var service;
-            switch (tipo) {
-                case '1':
-                    service = RoundRobinService;
-                    break;
-                case '2':
-                    service = LTGService;
-                    break;
-                case '3':
-                    service = IntervalBasedService;
-                    break;
-            }
-            return service;
-        };
-
-        return algoritmo;
-    })
-    .factory('CommonFunctionsService', function () {
+function CommonService(injector, $rootScope) {
         return {
             self: this,
+
+            construirMemoria: function() {
+                var memory;
+                switch ($(this)[0].config.memoria.id) {
+                    case '1':
+                        memory = injector.get('BestFit');
+                        break;
+                    case '3':
+                        memory = injector.get('MergeFit');
+                        break;
+                }
+                return memory;
+            },
+
+            construirAlgoritmo: function () {
+            var service;
+                switch ($(this)[0].config.algoritmo) {
+                    case '1':
+                        service = injector.get('RoundRobinService');
+                        break;
+                    case '2':
+                        service = injector.get('LTGService');
+                        break;
+                    case '3':
+                        service = injector.get('IntervalBasedService');
+                        break;
+                }
+                return service
+            },
 
             increaseProcessorUsage: function (processador) {
                 $(this)[0].config.processadorPrincipal.usage[5] += 1;
@@ -58,6 +66,12 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, 
             processos: [],
             headers: [],
 
+            abortarProcesso: function(processo) {
+                var algoritmo = $(this)[0].construirAlgoritmo();
+                algoritmo.abortaProcesso(processo);
+                processo.state = 'Abortado';
+            },
+
             //Fonte https://pt.wikipedia.org/wiki/Insertion_sort
             insertionSort: function (processos) {
                 var i, j, eleito;
@@ -82,7 +96,8 @@ so.factory('AlgorithmExecuterService', function (RoundRobinService, LTGService, 
                 return hours + ":" + minutes + ":" + seconds;
             }
         };
-    });
+    };
+
 
 so.factory('LogService', ['CommonFunctionsService', LogService]);
 

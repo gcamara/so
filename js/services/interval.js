@@ -161,7 +161,6 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                 processo = processador.aptos.shift();
                 processador.processo = processo;
                 interval.cmService.increaseProcessorUsage(processador);
-                $rootScope.$broadcast('aptoMudou', {apto: processo});
                 var executado = processo.endTime.getTime() - processo.startTime.getTime();
                 executado /= 1000;
                 executado  = Math.round(100/executado);
@@ -181,10 +180,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                         processador.processo = undefined;
                         $interval.cancel(processador.decreaseTime);
                         interval.cmService.decreaseProcessorUsage(processador);
-                        $rootScope.$broadcast('aptoMudou', {apto: processo});
-                    } else if (processo.executado < 20) {
-                        $rootScope.$broadcast('aptoMudou', {apto: processo});
-                    }
+                    } 
                 }, 1000);
             }
         }
@@ -213,13 +209,18 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
         //pid, horaExecucao, tempoTotal, active
         var processo = new Processo(i, undefined, tempoTotal, active);
         var memoriaProcesso = container.random(32, 1024);
-        this.config.memoria.algoritmo.buscarMemoria(proc,memoriaProcesso);
         processo.startTime = time;
         processo.endTime = timeChanged;
+        this.config.memoria.algoritmo.buscarMemoria(processo,memoriaProcesso);
 
         interval.cmService.processos.push(processo);
         interval.processadores[0].aptos.push(processo);
         interval.countDown(processo);
+    }
+
+    interval.abortaProcesso = function(processo) {
+        var remainder = interval.remainder;
+        remainder.splice(remainder.indexOf(processo), 1);
     }
 
     interval.countDown = function (processo) {
@@ -234,7 +235,6 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
 
             if (data.getTime() > processTime.getTime() && processo.state == 'Pronto') {
                 processo.state = 'Abortado';
-                $rootScope.$broadcast('aptoMudou', {apto: processo});
                 interval.remainder.splice(interval.remainder.indexOf(processo), 1);
                 processo.tempo = 0;
                 processo.tempoTotal = 0;

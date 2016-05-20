@@ -18,6 +18,7 @@ angular.module('minhasDiretivas', [])
         ddo.replace = true;
         ddo.templateUrl = 'directives/table.html';
         ddo.controller = "TableController";
+        ddo.controllerAs = 'vm';
 
         return ddo;
     })
@@ -78,41 +79,6 @@ angular.module('minhasDiretivas', [])
             }
         }
     })
-    .directive("stateElement", function ($rootScope, CommonFunctionsService) {
-
-        var ddo = {
-            restrict: 'A',
-            replace: true,
-            scope: {
-                apto: '=',
-                tipo: '@'
-            },
-            link: function (scope, element) {
-                $rootScope.$on('aptoMudou', function (event, args) {
-                    if (args.apto.pid != undefined) {
-                        if (args.apto == scope.apto) {
-                            var clzz = CommonFunctionsService.stateClass(scope.apto, scope.tipo);
-                            var toRemove = clzz.replace(scope.tipo + '-', '');
-
-                            var lista = ['success', 'warning', 'danger', 'info'];
-                            lista.splice(lista.indexOf(toRemove), 1);
-                            lista.forEach(function (subtipo) {
-                                element.removeClass(scope.tipo + '-' + subtipo);
-                            });
-
-                            if (scope.apto.state === 'Concluido') {
-                                element.removeClass('active');
-                            }
-
-                            element.addClass(clzz);
-                        }
-                    }
-                });
-            }
-        }
-
-        return ddo;
-    })
     .directive("progressProcess", function () {
         return {
             replace: true,
@@ -128,7 +94,8 @@ angular.module('minhasDiretivas', [])
                     }
                 }
             },
-            templateUrl: 'directives/progress.html'
+            templateUrl: 'directives/progress.html',
+            controller: 'TableController'
         };
     }).directive("containerPrincipal", function (CommonFunctionsService) {
     return {
@@ -148,22 +115,22 @@ angular.module('minhasDiretivas', [])
             })
         }
     }
-}).directive('dhxGantt', function ($rootScope) {
+}).directive('dhxGantt', function ($rootScope, CommonFunctionsService) {
+    var service = CommonFunctionsService;
     return {
         restrict: 'A',
-        scope: false,
+        scope: {
+            data: "="
+        },
         transclude: true,
         template: '<div ng-transclude></div>',
 
         link: function ($scope, $element, $attrs, $controller) {
             //watch data collection, reload on changes
             var i = 0;
-            $scope.$watch($attrs.data, function (collection) {
-                // gantt.clearAll();
-                if (collection) {
-                    gantt.parse(collection, "json");
-                }
-            }, true);
+            $rootScope.$on('iniciar', function() {
+                gantt.parse(service.config.tasks, "json");
+            });
 
 
             $rootScope.$on('memoryConsumption', function (event, args) {
@@ -205,7 +172,20 @@ function DirectiveConsole(service, interval) {
     self.link = link;
 
     function link(scope, element) {
-        interval(function() { element[0].firstChild.scrollTop += 30 }, 100);
+        var scrollDown;
+        var fn = function() { element[0].firstChild.scrollTop += 9999999 };
+        element.bind('mouseover', function() {
+            scrollDown = interval(fn, 100);
+        })
+        element.bind('mouseout', function() {
+            interval.cancel(scrollDown);
+        })
+        element.bind('mousedown', function(event) {
+            interval.cancel(scrollDown);
+        })
+        element.bind('mouseup', function() {
+            scrollDown = interval(fn, 100);
+        })
     }
     return self;
 }

@@ -31,7 +31,7 @@
             processadores = [];
 
             processadores = angular.copy(this.config.processadores);
-            self.processos = self.cmService.processos;
+            self.processos = service.processos;
         }
 
         this.criarProcesso = function (active) {
@@ -68,7 +68,6 @@
         });
 
         this.countDown = function (processo) {
-            var aptos = this.aptos;
 
             var interval = function (execFunction) {
                 var etc = processo.tempoTotal - processo.tempo > 0;
@@ -81,13 +80,12 @@
                 if (etc) {
                     processo.tempo += 1;
                 } else if (!etc && processo.state != 'Executando') {
-                    abortaProcesso(processo, execFunction, aptos);
-                    $rootScope.$broadcast('aptoMudou', {'apto': processo, 'lastState': '-success'});
+                    self.abortaProcesso(processo, execFunction);
                 }
             }
 
             var execFunction = $interval(function () {
-                if (!CommonFunctionsService.config.running) {
+                if (!service.config.running) {
                     $interval.cancel(execFunction);
                     return;
                 }
@@ -95,14 +93,13 @@
             }, 1000);
         }
 
-        var abortaProcesso = function (processo, execFunction, aptos) {
-            logger.procError('Abortando processo ' + processo.pid);
+        this.abortaProcesso = function (processo, execFunction) {
+            logger.procError(NAME, 'Abortando processo ' + processo.pid);
             processo.state = 'Abortado';
             $interval.cancel(execFunction)
-            aptos.splice(aptos.indexOf(processo), 1);
+            self.aptos.splice(self.aptos.indexOf(processo), 1);
             processo.limparBlocos(service);
             logger.memoryInfo(NAME, 'Limpando blocos do processo ' + processo.pid);
-
         }
 
         this.criaProcessos = function () {
@@ -126,9 +123,9 @@
             processo.executado = 0;
             processo.state = 'Executando';
 
-            self.cmService.increaseProcessorUsage(processador);
+            service.increaseProcessorUsage(processador);
             processador.decreaseTime = $interval(function () {
-                if (self.cmService.config.running) {
+                if (service.config.running) {
                     processo.executado += container.random(2, 5);
                     var pct = processo.executado;
 
@@ -138,15 +135,11 @@
                         processador.processo = undefined;
                         processo.state = 'Concluido';
                         processo.limparBlocos(service);
-                        $rootScope.$broadcast('aptoMudou', {'apto': processo, 'lastState': '-info'});
                         this.processadores.splice(processador.id, 0, processador);
-                        self.cmService.decreaseProcessorUsage(processador);
+                        service.decreaseProcessorUsage(processador);
                         self.executarProximo();
                     } else {
                         processo.progress = pct;
-                        if (pct < 20) {
-                            $rootScope.$broadcast('aptoMudou', {'apto': processo});
-                        }
                     }
                 } else {
                     $interval.cancel(processador.decreaseTime);

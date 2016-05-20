@@ -12,11 +12,21 @@ function ConfigController($rootScope, $scope, CommonFunctionsService, $interval,
 
 
     $scope.config = CommonFunctionsService.config;
-    $scope.config.memoria.algoritmo = BestFit;
+    var memoria = $scope.config.memoria;
+    memoria.algoritmo = BestFit;
     $scope.config.tasks;
 
-    var memoria = $scope.config.memoria;
-
+    var classes = {
+        'Abortado': 'danger',
+        'Pronto': 'success',
+        'Aguardando': 'warning',
+        'Executando': 'info',
+        'Concluido': 'success'
+    };
+    $scope.getClass = function(processo, tipo) {
+        return tipo+"-"+classes[processo.state];
+    }
+    
     logger.sysInfo('Sistema inicializado...');
     //Observa a quantidade de cores que deve estar num intervalo de 1 a 64
     $scope.$watch(
@@ -51,7 +61,8 @@ function ConfigController($rootScope, $scope, CommonFunctionsService, $interval,
             $scope.config.tasks.length = 0;
         }
 
-        $scope.config.tasks = gerarDados();
+        gerarDados();
+        $scope.config.tasks = memoria.data;
         $scope.labels = [1, 2, 3, 4, 5, 6];
         $scope.config.processadores = [];
         $scope.series = [];
@@ -93,6 +104,10 @@ function ConfigController($rootScope, $scope, CommonFunctionsService, $interval,
         $rootScope.$broadcast('parar');
         $interval.cancel($scope.timer);
         $scope.config.processadorPrincipal.usage = [0, 0, 0, 0, 0, 0];
+
+        $scope.config.processos.forEach(function(processo) {
+            processo.limparBlocos(CommonFunctionsService);
+        });
     };
 
     $rootScope.$on('parar', $scope.parar());
@@ -117,7 +132,5 @@ function ConfigController($rootScope, $scope, CommonFunctionsService, $interval,
             }
             dataHoje.setDate(dataHoje.getDate() + 1);
         }
-
-        return memoria.data;
     }
 };

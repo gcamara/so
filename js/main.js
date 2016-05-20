@@ -81,9 +81,10 @@ function Memoria() {
 
     Memoria.prototype.aumentarConsumo = function(consumo) {
         if (this.total*1024 - this.consumo - consumo < 0) {
-            throw "Sem memoria livre";
+            throw "OutOfMemoryException - Memoria livre: " + memoria.memoriaLivre().toFixed(2) + " bytes";
+        } else {
+           this.consumo += consumo;
         }
-        this.consumo += consumo;
     }
 
     Memoria.prototype.diminuirConsumo = function(consumo) {
@@ -91,7 +92,7 @@ function Memoria() {
     }
 
     Memoria.prototype.memoriaLivre = function() {
-        return (this.total*1024 - this.consumo)*1024//memoria em bytes;
+        return (this.total*1024 - this.consumo)
     }
 
     /**

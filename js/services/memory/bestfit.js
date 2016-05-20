@@ -13,34 +13,46 @@
 
         self.buscarMemoria = function (processo, qtdeUso) {
             logger.memoryInfo(NAME, "[Processo " + processo.pid + "] - Memória solicitada: " + qtdeUso + " bytes");
-            qtdeUso /= 1024;
             try {
+                qtdeUso /= 1024;
                 memoria.aumentarConsumo(qtdeUso);
                 var qtoOcupa = (qtdeUso * 100) / memoria.tamanhoBloco();
-                //qtoOcupa *= 1024;
+            
 
                 var data = memoria.data.data;
                 var blocoFinal;
                 for (var i = 0; i < data.length; i++) {
                     var bloco = data[i];
+
+                    if (bloco.processo) {
+                        continue;
+                    }
+
                     if (!blocoFinal) {
                         blocoFinal = bloco;
                     }
-                    var total = (1 - bloco.progress);
-                    if (total == qtdeUso) {
-                        blocoFinal = bloco;
-                        break;
-                    } else {
-                        if (bloco.progress + (qtoOcupa / 100) < 1 && bloco.progress < blocoFinal.progress) {
+                    if (bloco.process < blocoFinal.process) {
+                        var total = (1 - bloco.progress);
+                        if (total == qtdeUso) {
+                            blocoFinal = bloco;
+                            break;
+                        } else if (bloco.progress + (qtoOcupa / 100) < 1) {
                             blocoFinal = bloco;
                         }
-                    }
+                    }   
                 }
+                if (!blocoFinal) {
+                    memoria.diminuirConsumo(qtdeUso);
+                    throw "OutOfBlockException - Sem blocos disponíveis para o processo "+processo.pid;
+                }
+                blocoFinal.processo = processo;
                 blocoFinal.progress += qtoOcupa / 100;
-                processo.blocos.push({bloco: blocoFinal, ocupa: qtoOcupa / 100, uso: qtdeUso});
-                memoria.avisarConsumo($rootScope, bloco);
+                logger.memoryInfo(NAME, "Bloco "+blocoFinal.id+" ocupado pelo processo "+processo.pid);
+                processo.blocos.push({bloco: blocoFinal, ocupa: qtoOcupa/100, uso: qtdeUso});
+                memoria.avisarConsumo($rootScope, blocoFinal);
             } catch (e) {
-                logger.memoryError(NAME, "OutOfMemoryException - Memoria livre: " + memoria.memoriaLivre().toFixed(2) + " bytes");
+                logger.memoryError(NAME, e);
+                service.abortarProcesso(processo);
             }
 
         }

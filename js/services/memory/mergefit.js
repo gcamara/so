@@ -12,7 +12,7 @@
         var self = this;
         var config = service.config;
         var memoria = config.memoria;
-        var blocos = [];
+        var blocos = angular.copy(memoria.data.data);
         self.id = '3';
 
         self.buscarMemoria = function (processo, qtdeUso) {
@@ -20,28 +20,25 @@
             qtdeUso /= 1024;
             try {
                 memoria.aumentarConsumo(qtdeUso);
-                var qtoOcupa = (qtdeUso * 100) / memoria.tamanhoBloco();
-                //qtoOcupa *= 1024;
-
+                var qtoOcupa = qtdeUso / memoria.tamanhoBloco();
+                
                 var data = memoria.data.data;
                 var blocoFinal;
-                for (var i = 0; i < data.length; i++) {
-                    var bloco = data[i];
-                    if (!blocoFinal) {
-                        blocoFinal = bloco;
-                    }
-                    var total = (1 - bloco.progress);
-                    if (total == qtdeUso) {
-                        blocoFinal = bloco;
-                        break;
-                    } else {
-                        if (bloco.progress + (qtoOcupa / 100) < 1 && bloco.progress < blocoFinal.progress) {
-                            blocoFinal = bloco;
+                
+                var blocosOcupados = [];
+                var diferenca = 0;
+                blocos.forEach(function(bloco) {
+                    if (bloco.progress < qtoOcupa) {
+                        diferenca = bloco.progress + qtoOcupa;
+                        if (diferenca > 1) {
+                            var restoProgress = 1 - bloco.progress;
+                            bloco.progress += restoProgress;
+                            processo.blocos.push({bloco: bloco, ocupa: restoProgress, uso: qtdeUso});
+                            blocosOcupados.push(bloco);
                         }
                     }
-                }
-                blocoFinal.progress += qtoOcupa / 100;
-                processo.blocos.push({bloco: blocoFinal, ocupa: qtoOcupa / 100, uso: qtdeUso});
+                })
+
                 memoria.avisarConsumo($rootScope, bloco);
             } catch (e) {
                 logger.error(NAME, "OutOfMemoryException - Memoria livre: " + memoria.memoriaLivre().toFixed(2) + " bytes");

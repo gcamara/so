@@ -102,13 +102,27 @@ function RoundRobin($interval, $rootScope, service, logger) {
                             }
                             $rootScope.$broadcast('BuscarProximo');
                         }
-                        $rootScope.$broadcast('aptoMudou', {'apto': apto});
                     }, 1000);
                 }
             }
         }
-
     };
+
+    roundrobin.abortaProcesso = function (processo, execFunction, aptos) {
+        logger.procError(NAME, 'Abortando processo ' + processo.pid);
+        processo.state = 'Abortado';
+        $interval.cancel(execFunction)
+        for (var i = 0; i < 4; i++) {
+            var listaAptos = roundrobin.aptos[i];
+            var index = listaAptos.indexOf(processo);
+            if (index > -1) {
+                listaAptos.splice(index, 1);
+                break;
+            }
+        };
+        processo.limparBlocos(service);
+        logger.memoryInfo(NAME, 'Limpando blocos do processo ' + processo.pid);
+    }
 
     $rootScope.$on('BuscarProximo', function () {
         if (roundrobin.config.running) {
@@ -154,20 +168,23 @@ function RoundRobin($interval, $rootScope, service, logger) {
      *Cria processo especifico para o Round Robin
      */
     roundrobin.criarProcesso = function (active) {
+
         var prioridade = container.random(0, 3);
 
         var pid = service.processos.length;
         var tempoTotal = container.random(4, 20);
 
+        //Construir Processo
         //pid, horaExecucao, tempoTotal, active
         var proc = new Processo(pid, undefined, tempoTotal, active);
-        var memoriaProcesso = container.random(32, 1024);
-        this.config.memoria.algoritmo.buscarMemoria(proc, memoriaProcesso);
         proc.prioridade = prioridade;
 
         roundrobin.aptos[prioridade].push(proc);
         service.processos.push(proc);
-        $rootScope.$broadcast('aptoMudou', {'apto': proc, 'lastState': '-success'});
+
+        //Verificar memória
+        var memoriaProcesso = container.random(32, 1024);
+        this.config.memoria.algoritmo.buscarMemoria(proc, memoriaProcesso);
         $rootScope.$broadcast('BuscarProximo', {'apto': proc});
     };
 

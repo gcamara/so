@@ -115,51 +115,6 @@ angular.module('minhasDiretivas', [])
             })
         }
     }
-}).directive('dhxGantt', function ($rootScope, CommonFunctionsService) {
-    var service = CommonFunctionsService;
-    return {
-        restrict: 'A',
-        scope: {
-            data: "="
-        },
-        transclude: true,
-        template: '<div ng-transclude></div>',
-
-        link: function ($scope, $element, $attrs, $controller) {
-            //watch data collection, reload on changes
-            var i = 0;
-            $rootScope.$on('iniciar', function() {
-                gantt.parse(service.config.tasks, "json");
-            });
-
-
-            $rootScope.$on('memoryConsumption', function (event, args) {
-                var task = gantt.getTask(args.id);
-                if (task) {
-                    task.progress = args.valor;
-                    gantt.updateTask(args.id);
-                }
-            });
-
-            var config = gantt.config;
-            config.show_grid = false;
-            config.grid_width = 0;
-            config.drag_lightbox = false;
-            config.drag_links = false;
-            config.drag_move = false;
-            config.drag_progress = false;
-            config.drag_resize = false;
-            config.readonly = true;
-            config.select_task = false;
-            config.show_errors = false;
-            config.show_links = false;
-            config.scale_height = 0;
-            config.row_height = 25;
-            //config.show_chart = false;
-            //init gantt
-            gantt.init($element[0]);
-        }
-    }
 });
 
 so.directive('console', ['CommonFunctionsService', '$interval', DirectiveConsole]);
@@ -188,4 +143,30 @@ function DirectiveConsole(service, interval) {
         })
     }
     return self;
+};
+
+so.directive('memoria', DirectiveMemoria);
+
+function DirectiveMemoria() {
+    return {
+        restrict: 'E',
+        templateUrl: 'directives/memoria.html',
+        scope:  {
+            dados: '='
+        }
+    }
+};
+
+so.directive('bloco', DiretivaBloco);
+
+function DiretivaBloco() {
+    return {
+        restrict: 'E',
+        templateUrl: 'directives/bloco.html',
+        scope: {
+            texto: '@',
+            tooltip: '@',
+            consumo: '='
+        }
+    }
 }

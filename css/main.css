@@ -116,21 +116,21 @@ hr {
     margin-top: -3px;
 }
 
-#recursos {
-    opacity: 0;
-    transition: opacity 0.4s ease-in;
-    -ms-transition: opacity 0.4s ease-in;
-    -moz-transition: opacity 0.4s ease-in;
-    -webkit-transition: opacity 0.4s ease-in;
-}
+/*#recursos {*/
+    /*opacity: 0;*/
+    /*transition: opacity 0.4s ease-in;*/
+    /*-ms-transition: opacity 0.4s ease-in;*/
+    /*-moz-transition: opacity 0.4s ease-in;*/
+    /*-webkit-transition: opacity 0.4s ease-in;*/
+/*}*/
 
-#recursos.show {
-    opacity: 1;
-    transition: opacity 0.4s ease-in;
-    -ms-transition: opacity 0.4s ease-in;
-    -moz-transition: opacity 0.4s ease-in;
-    -webkit-transition: opacity 0.4s ease-in;
-}
+/*#recursos.show {*/
+    /*opacity: 1;*/
+    /*transition: opacity 0.4s ease-in;*/
+    /*-ms-transition: opacity 0.4s ease-in;*/
+    /*-moz-transition: opacity 0.4s ease-in;*/
+    /*-webkit-transition: opacity 0.4s ease-in;*/
+/*}*/
 
 .panel .panel-heading {
     height: 30px;
@@ -172,4 +172,111 @@ hr {
 
 #config {
     center: 0;
+}
+
+.grid {
+    border: 1px rgba(220, 220, 220, .5) solid;
+    border-width: 1px 0 0 1px;
+    min-width: 10%;
+    min-height: 25px;
+    position: relative;
+}
+
+.table-cell {
+    border: 1px rgba(220, 220, 220, .5) solid;
+    border-width: 0 1px 1px 0;
+    width: 10%;
+    height: 24px;
+    float: left;
+    padding: 2px;
+    display: inline-flex;
+}
+
+.table-consumption {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: indianred;
+    color: black;
+    text-align: -webkit-center;
+    -webkit-transition: width 2s;
+    -moz-transition: width 2s;
+    -ms-transition: width 2s;
+    -o-transition: width 2s;
+    transition: width 2s;
+    width: 0px;
+}
+
+.table-consumption:hover {
+    width: 100%;
+}
+
+.pesquisa {
+}
+
+.pesquisa.ng-enter, .pesquisa.ng-leave {
+    -webkit-transition: opacity .5s;
+    -moz-transition: opacity .5s;
+    -ms-transition: opacity .5s;
+    -o-transition: opacity .5s;
+    transition: opacity .5s;
+}
+
+.pesquisa.ng-enter,
+.pesquisa.ng-leave.ng-leave-active {
+    opacity:0;
+}
+
+.pesquisa.ng-leave,
+.pesquisa.ng-enter.ng-enter-active {
+    opacity:1;
+}
+
+/*W3C - */
+.tooltip {
+    /*position: relative;*/
+    display: inline-block;
+    height: 20px;
+    background: orange;
+    opacity: 1;
+    z-index: 0;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+
+    /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.tooltip:hover {
+    background: rgba(255, 216, 114, 0.79);
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
 }

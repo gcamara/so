@@ -29,6 +29,7 @@
     <script src="js/controllers/table-controller.js"></script>
     <script src="js/Chart.min.js"></script>
     <script src="js/angular-chart.js"></script>
+    <script src="js/filters.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/jquery-ui.css">
@@ -160,7 +161,7 @@
 
         <!-- Corpo de execucao -->
         <div class="row">
-            <div ng-show="config.processadores.length" style="height: 400px">
+            <div ng-if="config.processadores.length" style="height: 400px">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
@@ -181,7 +182,7 @@
         <tabela titulo="Processos"></tabela>
         <!-- Fim container generico -->
     </div>
-    <div id="recursos" ng-class="{ 'show': config.running }" class="col-md-6" ng-show="config.processadores.length"
+    <div id="recursos" class="col-md-6 pesquisa" ng-if="config.processadores.length"
          style="padding-top: 20px; height: 100%">
         <div class="panel panel-default">
             <div class="panel-heading">Recursos</div>
@@ -198,8 +199,7 @@
                         <h4>Memória</h4>
                         <hr/>
                         Tamanho: {{config.memoria.total}}kB | Consumo: {{(config.memoria.consumo/1024).toFixed(2)}}kB
-                        <div dhx-gantt data="config.tasks" style="height:250px; width:100%">
-                        </div>
+                        <memoria></memoria>
                     </div>
                 </div>
             </div>
@@ -209,9 +209,30 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Console
-                    <a class="pull-right" style="font-size: .9em"
-                           ng-click="config.console.log.length = 0" alt="Limpar tudo"><i
+                    <div class="pull-right" style="display: inline-flex">
+                        <div class="pesquisa" ng-if="filtrar" style="display: inherit;">
+                            <span style="margin-right: 5px">
+                                Tipo:
+                            </span>
+                            <select class="form-control" ng-model="search.tipo"
+                                    style="max-height: 30px; max-height: 20px; padding:0; margin-right: 10px">
+                                <option value="" selected>Todos</option>
+                                <option value="INFO">Infos</option>
+                                <option value="ERROR">Erros</option>
+                            </select>
+                        <input type="text" placeholder="Digite a busca..." ng-model="search.msg" class="form-control"
+                               style="max-height: 30px; max-height: 20px; padding:0; font-size: .9em; width: 200px; margin-right: 10px" />
+                        </div>
+
+                        <a style="font-size: .9em"
+                           ng-click="alterarFiltrar()" title="Filtrar"><i
+                                class="glyphicon glyphicon-search"></i></a>
+                        <span style="font-size: .9em">|</span>
+                        <a style="font-size: .9em"
+                           ng-click="config.console.log.length = 0" title="Limpar tudo"><i
                         class="glyphicon glyphicon-trash"></i></a>
+
+                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="row">

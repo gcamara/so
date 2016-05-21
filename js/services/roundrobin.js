@@ -83,7 +83,6 @@ function RoundRobin($interval, $rootScope, service, logger) {
                             pct = (apto.tempo / apto.tempoTotal) * 100;
                             apto.progress = Math.floor(pct);
                         } else {
-                            service.decreaseProcessorUsage(processador);
                             processador.estado = 'Parado';
                             logger.procInfo(NAME, 'Processador ' + processador.id + ' parou');
                             $interval.cancel(processador.decreaseTime);
@@ -100,6 +99,7 @@ function RoundRobin($interval, $rootScope, service, logger) {
                                 apto.state = 'Concluido';
                                 apto.limparBlocos(service);
                             }
+                            service.decreaseProcessorUsage(processador);
                             $rootScope.$broadcast('BuscarProximo');
                         }
                     }, 1000);

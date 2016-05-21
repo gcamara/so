@@ -2,18 +2,20 @@
  * Created by Gabriel on 05/03/2016.
  */
 angular.module('so')
-    .controller('ConfigController', ['$rootScope', '$scope', 'CommonFunctionsService', '$interval', 'BestFit', 'LogService', ConfigController]);
-function ConfigController($rootScope, $scope, CommonFunctionsService, $interval, BestFit, logger) {
+    .controller('ConfigController', ['$rootScope', '$scope', 'CommonFunctionsService', '$interval', '$injector', 'LogService', ConfigController]);
+function ConfigController($rootScope, $scope, service, $interval, $injector, logger) {
 
     $scope.labels = [1, 2, 3, 4, 5, 6];
     $scope.series = [];
     $scope.data = [];
     $scope.timer;
+    $scope.filtrar = false;
+    $scope.search = {msg: ''};
 
 
-    $scope.config = CommonFunctionsService.config;
+    $scope.config = service.config;
     var memoria = $scope.config.memoria;
-    memoria.algoritmo = BestFit;
+    memoria.algoritmo = $injector.get('BestFit');
     $scope.config.tasks;
 
     var classes = {
@@ -105,10 +107,18 @@ function ConfigController($rootScope, $scope, CommonFunctionsService, $interval,
         $interval.cancel($scope.timer);
         $scope.config.processadorPrincipal.usage = [0, 0, 0, 0, 0, 0];
 
-        $scope.config.processos.forEach(function(processo) {
-            processo.limparBlocos(CommonFunctionsService);
+        logger.sysInfo('Limpando todos os blocos')
+        service.processos.forEach(function(processo) {
+            processo.limparBlocos(service);
         });
+        logger.sysInfo('Limpeza concluída');
     };
+
+    $scope.alterarFiltrar = function() {
+        $scope.filtrar = !$scope.filtrar;
+        $scope.search.msg = '';
+        $scope.search.tipo = '';
+    }
 
     $rootScope.$on('parar', $scope.parar());
 
@@ -119,8 +129,8 @@ function ConfigController($rootScope, $scope, CommonFunctionsService, $interval,
 
         var data = memoria.data;
         var dataHoje = new Date();
-        for (var j = 0; j < 10; j++) {
-            for (var i = 0; i < 10; i++) {
+        for (var j = 0; j < 2; j++) {
+            for (var i = 0; i < 2; i++) {
                 var dado = {
                     id: data.data.length + 1,
                     text: $scope.config.memoria.total / 100 + "kB",

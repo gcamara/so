@@ -1,11 +1,11 @@
 /**
  * Created by Gabriel on 20/03/2016.
  */
-so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService, $interval) {
+so.factory('IntervalBasedService', ['$rootScope', 'CommonFunctionsService', '$interval', IntervalService]);
+function IntervalService($rootScope, service, $interval) {
     var interval = {};
-    interval.cmService = CommonFunctionsService;
-    interval.config = interval.cmService.config;
-    interval.processos = interval.cmService.processos;
+    interval.config = service.config;
+    interval.processos = service.processos;
     interval.processadores = [];
     interval.remainder = [];
 
@@ -15,7 +15,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
         //Limpa os vetores
         interval.remainder = [];
         this.config.aptos = [];
-        this.cmService.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Intervalo', 'ETC(s)'];
+        service.headers = ['PID', 'Processo', 'Progresso', 'Estado', 'Intervalo', 'ETC(s)'];
         this.processadores = this.config.processadores;
 
         this.processadores.forEach(function (processador) {
@@ -24,7 +24,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
     }
 
     interval.criarProcessos = function () {
-        interval.cmService.processos = [];
+        service.processos = [];
         for (var i = 0; i < interval.config.processos; i++) {
             interval.buildProcesso();
         }
@@ -147,8 +147,8 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                 return;
             }
 
-            var horaAtualFormatada = interval.cmService.formatHours(data);
-            var horaProcFormatada = interval.cmService.formatHours(processo.startTime);
+            var horaAtualFormatada = service.formatHours(data);
+            var horaProcFormatada = service.formatHours(processo.startTime);
             var horasStringIguais = horaAtualFormatada == horaProcFormatada;
 
             if (horasStringIguais && interval.notAllowedStates.indexOf(processo.state) == -1) {
@@ -160,7 +160,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                 $interval.cancel(processador.execFunc);
                 processo = processador.aptos.shift();
                 processador.processo = processo;
-                interval.cmService.increaseProcessorUsage(processador);
+                service.increaseProcessorUsage(processador);
                 var executado = processo.endTime.getTime() - processo.startTime.getTime();
                 executado /= 1000;
                 executado  = Math.round(100/executado);
@@ -176,10 +176,10 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                         processo.progress = 100;
 
                         processo.state = 'Concluido';
-                        processo.limparBlocos(interval.cmService);
+                        processo.limparBlocos(service);
                         processador.processo = undefined;
                         $interval.cancel(processador.decreaseTime);
-                        interval.cmService.decreaseProcessorUsage(processador);
+                        service.decreaseProcessorUsage(processador);
                     } 
                 }, 1000);
             }
@@ -202,7 +202,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
         var timeChanged = new Date(time.getTime());
         timeChanged.setSeconds(timeChanged.getSeconds() + container.random(20, 30));
 
-        var i = interval.cmService.processos.length;
+        var i = service.processos.length;
         var tempoTotal = time.getTime() - new Date().getTime();
         tempoTotal /= 1000;
 
@@ -213,7 +213,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
         processo.endTime = timeChanged;
         this.config.memoria.algoritmo.buscarMemoria(processo,memoriaProcesso);
 
-        interval.cmService.processos.push(processo);
+        service.processos.push(processo);
         interval.processadores[0].aptos.push(processo);
         interval.countDown(processo);
     }
@@ -239,7 +239,7 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
                 processo.tempo = 0;
                 processo.tempoTotal = 0;
 
-                interval.processadores.forEach(function(proc) {
+                interval.processadores.forEach(function (proc) {
                     var index = proc.aptos.indexOf(processo);
                     if (index > -1) {
                         proc.aptos.splice(index, 1);
@@ -258,7 +258,5 @@ so.factory('IntervalBasedService', function ($rootScope, CommonFunctionsService,
 
         processo.countDown = countTimer;
     }
-
-
     return interval;
-})
+};

@@ -1,14 +1,8 @@
 <div class="col-md-12 grid">
+    <div></div>
     <div class="row" ng-repeat="n in [] | range: 10">
-        <div class="table-cell" ng-repeat="k in [] | range: 10">
+        <div id="c{{ (((10 - n) * 10)+k)-10 }}" class="table-cell">
             <!--<div class="table-consumption">-->
-            <bloco consumo="5" tooltip="Processo: P1 | Consumo: 10 bytes"></bloco>
         </div>
     </div>
 </div>
-
-<!--
-adicionar dinamicamente angular
-$('body').append($compile("<my-angular-directive />")(scope));
-scope.$apply();
--->

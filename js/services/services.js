@@ -65,6 +65,7 @@ function CommonService(injector, $rootScope) {
             aptos: [],
             processos: [],
             headers: [],
+            blocos: [],
 
             abortarProcesso: function(processo) {
                 var algoritmo = $(this)[0].construirAlgoritmo();

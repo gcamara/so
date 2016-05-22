@@ -20,8 +20,9 @@
     <script src="js/services/ltg.js"></script>
 
     <!-- Memoria -->
+    <script src="js/services/memory/MMU.js"></script>
     <script src="js/services/memory/bestfit.js"></script>
-    <script src="js/services/memory/bestfit.js"></script>
+    <script src="js/services/memory/mergefit.js"></script>
     <script src="js/services/services.js"></script>
 
     <!-- Controllers é o ultimo, pois os algoritmos tem que ser carregados antes de serem injetados -->
@@ -161,7 +162,7 @@
 
         <!-- Corpo de execucao -->
         <div class="row">
-            <div ng-if="config.processadores.length" style="height: 400px">
+            <div ng-show="config.processadores.length" style="height: 400px">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
@@ -182,7 +183,7 @@
         <tabela titulo="Processos"></tabela>
         <!-- Fim container generico -->
     </div>
-    <div id="recursos" class="col-md-6 pesquisa" ng-if="config.processadores.length"
+    <div id="recursos" class="col-md-6 pesquisa" ng-show="config.processadores.length"
          style="padding-top: 20px; height: 100%">
         <div class="panel panel-default">
             <div class="panel-heading">Recursos</div>

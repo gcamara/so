@@ -50,7 +50,7 @@ function Processo(pid, horaExecucao, tempoTotal, active) {
     Processo.prototype.limparBlocos = function(service) {
         this.blocos.forEach(function (objetoBloco) {
             var bloco = objetoBloco.bloco;
-            bloco.progress -= objetoBloco.ocupa;
+            bloco.style.width = "0";
             service.config.memoria.diminuirConsumo(objetoBloco.uso);
         });
     }
@@ -81,7 +81,7 @@ function Memoria() {
 
     Memoria.prototype.aumentarConsumo = function(consumo) {
         if (this.total*1024 - this.consumo - consumo < 0) {
-            throw "OutOfMemoryException - Memoria livre: " + memoria.memoriaLivre().toFixed(2) + " bytes";
+            throw "OutOfMemoryException - Memoria livre: " + this.memoriaLivre().toFixed(2) + " bytes";
         } else {
            this.consumo += consumo;
         }

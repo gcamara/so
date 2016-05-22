@@ -166,7 +166,8 @@ function DiretivaBloco() {
         scope: {
             texto: '@',
             tooltip: '@',
-            consumo: '='
+            consumo: '=',
+            id: '@'
         }
     }
 }

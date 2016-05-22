@@ -84,20 +84,18 @@ angular.module('so')
         $scope.updateValues;
         $scope.$on('iniciar', function () {
             service = cmService.construirAlgoritmo($scope.config.algoritmo);
-            $scope.config.memoria.algoritmo = BestFit;
             if (service) {
                 service.configurar();
                 cmService.aptos = service.aptos;
                 $scope.aptos = cmService.aptos;
-
-                service.executar();
+                $timeout(function(){
+                    $scope.config.memoria.algoritmo = BestFit;
+                    service.executar();
+                }, 300);
             } else {
                 alert('Algoritmo nao implementado');
                 $scope.$parent.parar();
             }
-
-            var lastData = 10;
-            var ultimaColuna = 1;
         });
 
         $scope.$on('parar', function (events, args) {

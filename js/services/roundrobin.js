@@ -11,6 +11,7 @@ function RoundRobin($interval, $rootScope, service, logger) {
     roundrobin.availableProcessors = [];
 
     var ultimaFila = 0;
+    var memoria = service.config.memoria;
 
     /**
      * Busca o proximo apto
@@ -67,6 +68,9 @@ function RoundRobin($interval, $rootScope, service, logger) {
                         $interval.cancel(processador.decreaseTime);
                     }
                     apto.state = 'Executando';
+                    if (apto.chance) {
+                        memoria.algoritmo.buscarMemoria(apto, container.random(32, 1024), true);
+                    }
                     service.increaseProcessorUsage(processador);
                     processador.decreaseTime = $interval(function () {
                         if (!config.running) {

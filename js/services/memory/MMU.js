@@ -1,69 +1,93 @@
 /**
  * Created by Gabriel on 21/05/2016.
  */
-angular.module('so').factory('MMUService', ['$rootScope','LogService', 'CommonFunctionsService', '$compile', '$timeout', '$q', MMU]);
+angular.module('so').factory('MMUService', ['$rootScope', 'LogService', 'CommonFunctionsService', '$compile', '$timeout', MMU]);
 
-var proximaMemoria = 0;
-var usados = 0;
-function MMU(scope, logger, service, $compile, $timeout, $q) {
+function MMU(scope, logger, service, $compile, $timeout) {
     var self = this;
 
     var config = service.config;
     var memoria = config.memoria;
     var ultimaLinhaUsada = 0;
     var inUse = 0;
+    var fila = [];
+    
+    self.totalLinha = (memoria.totalEmBytes()/10);
 
-    self.proximaMemoria = function (processo, porcentagem, consumoBytes) {
-        return $q(function(resolve, reject) {
-            memoria.aumentarConsumo(consumoBytes);
-            if (porcentagem < 1) {
-                porcentagem = 1;
+    scope.$on('parar', function () {
+        ultimaLinhaUsada = 0;
+        inUse = 0;
+        for (var i = 0; i < 100; i += 10) {
+            var indice = 'c' + i;
+            service.blocos[indice] = [];
+            var element = $('#' + indice);
+            element.empty();
+        }
+    });
+    
+    self.proximaMemoria = function (processo, consumoBytes, aleatoria, bloco) {
+        try {
+            if (!inUse) {
+                return buscarMemoria(processo, consumoBytes, aleatoria, bloco);
             }
-
-            var element = proximoElemento(porcentagem);
-
-            var bloco = $compile('<bloco id="' + processo.pid + '"consumo="' + porcentagem + '" tooltip="Processo: P' + processo.pid + '     Consumo: ' + consumoBytes.toFixed(2) + ' bytes">')(scope);
-            service.blocos.push(bloco);
-            angular.element(element.append(bloco));
-
-            $timeout(function (el) {
-                var element = $('#cp' + processo.pid)[0];
-                var color = container.random(100, 255);
-                if (!processo.color) {
-                    processo.color = rgbToHex(color - container.random(20, 100), color - container.random(10, 100), color - container.random(20, 50));
-                }
-                element.style.background = processo.color;
-
-                var lastElement = service.blocos[service.blocos.length-2];
-                if (lastElement) {
-                    var children = lastElement.children[lastElement.children.length - 1];
-                    var w = getAllWidth();
-
-                    if (w < el[0].offsetWidth) {
-                        var left = el[0].children.length + 1;
-                        if (children) element.style.left = (w + left) + "px";
-                    }
-                    else {
-
-                    }
-                }
-                element.style.width = porcentagem + 'px';
-                element.setAttribute('lastWidth', porcentagem);
-                processo.blocos.push({bloco: element, uso: consumoBytes});
-            }, 300, true, element);
-            self.memoriaAleatoria(processo);
+            fila.push({p: processo, cons: consumoBytes, rand: aleatoria, bloco: bloco});
+        } catch (e) {
             inUse = 0;
+            throw e;
+        }
+    }
 
-            // usados++;
+    function buscarMemoria(processo, consumoBytes, aleatoria, bloco) {
+        inUse = 1;
+        memoria.aumentarConsumo(consumoBytes);
 
-            resolve(bloco);
-        });
+        var porcentagem = consumoBytes*(830/self.totalLinha);
+
+        if (!bloco) {
+            var id = processo.pid + (aleatoria ? '-' + processo.blocos.length : '');
+            bloco = $compile('<bloco id="' + id + '"consumo="' + porcentagem + '" tooltip="Processo: P' + processo.pid + '     Consumo: ' + consumoBytes + ' bytes">')(scope);
+            bloco[0].setAttribute('lastWidth', porcentagem);
+            service.blocos['c' + ultimaLinhaUsada].push(bloco);
+            var element = proximoElemento(porcentagem);
+            angular.element(element.append(bloco));
+        }
+
+        if (aleatoria) logger.memoryInfo('MAIN', 'Processo ' + processo.pid + ' pediu memória: ' + consumoBytes + ' bytes');
+
+        bloco.processo = processo;
+
+        $timeout(function (bloco) {
+            var id = bloco[0].getAttribute('id');
+            var element = $('#cp' + id)[0];
+            var color = container.random(100, 255);
+            if (!processo.color) {
+                processo.color = rgbToHex(color - container.random(20, 100), color - container.random(10, 100), color - container.random(20, 50));
+            }
+            element.style.background = processo.color;
+            element.style.width = porcentagem + 'px';
+            processo.blocos.push({bloco: element, uso: consumoBytes, blocoReal: bloco});
+        }, 100, true, bloco);
+
+        if (fila.length) {
+            var attrbs = fila.pop();
+            buscarMemoria(attrbs.p, attrbs.cons, attrbs.rand, attrbs.bloco);
+        }
+        inUse = 0;
+
+        return bloco;
     }
 
     function getAllWidth() {
         var w = 0;
-        for (var i = 0; i < service.blocos.length; i++) {
-            w += parseFloat(service.blocos[i][0].children[0].children[0].getAttribute('lastWidth'));
+        var indice = 'c' + ultimaLinhaUsada;
+        if (ultimaLinhaUsada < 100) {
+            for (var i = 0; i < service.blocos[indice].length; i++) {
+                var el = service.blocos[indice][i][0];
+                if (el) {
+                    var value = el.getAttribute('lastWidth')
+                    if (value) w += parseFloat(value);
+                }
+            }
         }
         return w;
     }
@@ -77,36 +101,24 @@ function MMU(scope, logger, service, $compile, $timeout, $q) {
         return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     }
 
-    self.memoriaAleatoria = function(processo) {
-        sortear(1, 10, function() {
-            processo.pedirMemoria = $timeout(function(processo) {
-                var consumoEmBytes = container.random(32, 1024);
-                var consumoEmPCT = (consumoEmBytes/1024 * 100);
-                logger.memoryInfo('MAIN', 'Processo '+processo.pid+' pediu memória: '+consumoEmBytes+' bytes');
-                self.proximaMemoria(processo, consumoEmPCT, consumoEmBytes);
-            }, 2000, true, processo);
-        })
-
-    }
-
     function sortear(min, max, callback) {
         var numeros = [1, 5]; //20% de chance
         var chance = container.random(min, max);
-        (callback && numeros.indexOf(chance)>-1) && callback();
+        (callback && numeros.indexOf(chance) > -1) && callback();
     }
 
     function proximoElemento(porcentagem) {
-        var celula = '#c'+ultimaLinhaUsada;
+        var celula = '#c' + ultimaLinhaUsada;
         var element = $(celula);
-        var totalWidth = element[0].offsetWidth;
         var usedWidth = getAllWidth();
-        if (porcentagem + usedWidth < totalWidth-10) {
+        if (porcentagem + usedWidth < 830) {
             return element;
         } else {
+            ultimaLinhaUsada += 10;
             if (ultimaLinhaUsada > 90) {
+                ultimaLinhaUsada = 90;
                 throw "OutOfMemoryException - Não há mais blocos livres";
             }
-            ultimaLinhaUsada += 10;
             return proximoElemento(porcentagem);
         }
     }

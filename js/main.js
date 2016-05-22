@@ -47,10 +47,12 @@ function Processo(pid, horaExecucao, tempoTotal, active) {
     this.state = 'Pronto';
     this.prioridade;
     this.blocos = [];
+    this.chance = [1, 5].indexOf(container.random(1, 10)) > -1;
     Processo.prototype.limparBlocos = function(service) {
         this.blocos.forEach(function (objetoBloco) {
             var bloco = objetoBloco.bloco;
             bloco.style.width = "0";
+            objetoBloco.blocoReal.processo = undefined;
             service.config.memoria.diminuirConsumo(objetoBloco.uso);
         });
     }
@@ -75,12 +77,14 @@ function Configuration() {
 
 function Memoria() {
     this.consumo = 0;
-    this.total = 0.1;
+    this.total = 100;
     this.algoritmo;
-    this.data = {data: []};
 
+    Memoria.prototype.totalEmBytes = function() {
+        return this.total * 1024;
+    }
     Memoria.prototype.aumentarConsumo = function(consumo) {
-        if (this.total*1024 - this.consumo - consumo < 0) {
+        if (this.totalEmBytes() - this.consumo - consumo < 0) {
             throw "OutOfMemoryException - Memoria livre: " + this.memoriaLivre().toFixed(2) + " bytes";
         } else {
            this.consumo += consumo;
@@ -93,14 +97,6 @@ function Memoria() {
 
     Memoria.prototype.memoriaLivre = function() {
         return (this.total*1024 - this.consumo)
-    }
-
-    /**
-     * Tamanho do bloco em bytes
-     * @returns {number}
-     */
-    Memoria.prototype.tamanhoBloco = function() {
-        return (this.total / 100)*1024;
     }
 
     Memoria.prototype.avisarConsumo = function($rootScope, bloco) {

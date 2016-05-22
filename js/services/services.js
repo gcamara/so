@@ -1,9 +1,9 @@
 /**
  * Created by Gabriel on 08/03/2016.
  */
-so.factory('CommonFunctionsService', ['$injector', '$rootScope', CommonService]);
+so.factory('CommonFunctionsService', ['$injector', CommonService]);
 
-function CommonService(injector, $rootScope) {
+function CommonService(injector) {
         return {
             self: this,
 
@@ -65,7 +65,18 @@ function CommonService(injector, $rootScope) {
             aptos: [],
             processos: [],
             headers: [],
-            blocos: [],
+            blocos: {
+                'c0': [],
+                'c10': [],
+                'c20': [],
+                'c30': [],
+                'c40': [],
+                'c50': [],
+                'c60': [],
+                'c70': [],
+                'c80': [],
+                'c90': []
+            },
 
             abortarProcesso: function(processo) {
                 var algoritmo = $(this)[0].construirAlgoritmo();

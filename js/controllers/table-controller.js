@@ -86,7 +86,7 @@ angular.module('so')
             service = cmService.construirAlgoritmo($scope.config.algoritmo);
             if (service) {
                 service.configurar();
-                cmService.aptos = service.aptos;
+                service.aptos = service.aptos;
                 $scope.aptos = cmService.aptos;
                 $timeout(function(){
                     $scope.config.memoria.algoritmo = BestFit;
@@ -99,7 +99,12 @@ angular.module('so')
         });
 
         $scope.$on('parar', function (events, args) {
-            $scope.processos.length = 0;
+            cmService.processos.forEach(function(processo) {
+                processo.limparBlocos(cmService);
+            });
+            cmService.processos = [];
+            cmService.config.memoria.consumo = 0;
+            
             $interval.cancel($scope.updateValues);
         });
 

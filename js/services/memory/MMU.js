@@ -37,28 +37,8 @@ function MMU(scope, logger, service, $compile, $timeout) {
         }
     }
 
-    self.divideBloco = function(processo, bloco, consumo) {
-        logger.memoryInfo('MMU', 'Dividindo bloco '+bloco[0].getAttribute('id'));
-        var parent = bloco[0].parentNode;
-        var pct = consumo * (830/self.totalLinha);
-        var pid1 = processo.pid+'-'+1;
-        var bl1 = montarBloco(pid1, pct, processo, consumo);
-        var bl2 = montarBloco(processo.pid+'-'+2, pct, processo, 0);
-        bl1.processo = processo;
-        service.blocos[parent.getAttribute('id')].push(bl1);
-        service.blocos[parent.getAttribute('id')].push(bl2);
-
-        var node = $(bloco[0].getAttribute('id'));
-        bl1 = $compile(bl1)(scope);
-        bl2 = $compile(bl2)(scope);
-        node.after(bl2);
-        node.after(bl1);
-        node.remove();
-        return bl1;
-    }
-
-    function montarBloco(id, porcentagem, processo, consumoBytes) {
-        return '<bloco id="' + id + '" consumo="' + porcentagem + '" tooltip="Processo: P' + processo.pid + '     Consumo: ' + consumoBytes + ' bytes">';
+    self.montarBloco = function(id, porcentagem, processo, consumoBytes) {
+        return '<bloco id="' + id + '" consumo="' + porcentagem + '" tooltip="Processo: P' + (processo ? processo.pid : '') + '     Consumo: ' + consumoBytes + ' bytes">';
     }
 
     function buscarMemoria(processo, consumoBytes, aleatoria, bloco) {
@@ -69,7 +49,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
 
         if (!bloco) {
             var id = processo.pid + (aleatoria ? '-' + processo.blocos.length : '');
-            bloco = $compile(montarBloco(id, porcentagem, processo, consumoBytes))(scope);
+            bloco = $compile(self.montarBloco(id, porcentagem, processo, consumoBytes))(scope);
             bloco[0].setAttribute('lastWidth', porcentagem);
             service.blocos['c' + ultimaLinhaUsada].push(bloco);
             var element = proximoElemento(porcentagem);
@@ -128,8 +108,9 @@ function MMU(scope, logger, service, $compile, $timeout) {
     function proximoElemento(porcentagem) {
         var celula = '#c' + ultimaLinhaUsada;
         var element = $(celula);
+
         var usedWidth = getAllWidth();
-        if (porcentagem + usedWidth < 830) {
+        if (porcentagem + usedWidth < element[0].offsetWidth - 35) {
             return element;
         } else {
             ultimaLinhaUsada += 10;

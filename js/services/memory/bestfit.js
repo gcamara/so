@@ -27,13 +27,13 @@
             var ultimoTamanho = 0;
             var ultimoBloco;
             for (var i = 0; i < 100; i+= 10) {
-                for (var j = 0; j < service.blocos['c'+i].length; j++) {
-                    var blocos = service.blocos['c'+i];
+                var blocos = service.blocos['c'+i];
+                for (var j = 0; j < blocos.length; j++) {
                     for (var k = 0; k < blocos.length; k++) {
                         if (blocos[k].processo) continue;
                         var tam = blocos[k][0].getAttribute('lastWidth');
                         var existeBloco = (ultimoBloco ? tam < ultimoTamanho : true);
-                        if (existeBloco && tam >= tamanho) {
+                        if (existeBloco && parseFloat(tam) >= tamanho) {
                             ultimoBloco = blocos[k];
                             ultimoTamanho = tam;
                         }

@@ -5,46 +5,53 @@
  * Created by Gabriel on 14/05/2016.
  */
 (function () {
-    so.factory('MergeFit', ['CommonFunctionsService', '$rootScope', 'LogService', MergeFit]);
+    so.factory('MergeFit', ['CommonFunctionsService', 'MMUService', 'LogService', MergeFit]);
 
-    function MergeFit(service, $rootScope, logger) {
+    function MergeFit(service, MMU, logger) {
         const NAME = 'Merge FIT';
         var self = this;
         var config = service.config;
         var memoria = config.memoria;
-        var blocos = angular.copy(memoria.data.data);
         self.id = '3';
 
-        self.buscarMemoria = function (processo, qtdeUso) {
+        self.buscarMemoria = function (processo, qtdeUso, aleatoria) {
             logger.memoryInfo(NAME, "[Processo " + processo.pid + "] - Memória solicitada: " + qtdeUso + " bytes");
-            qtdeUso /= 1024;
-            try {
-                memoria.aumentarConsumo(qtdeUso);
-                var qtoOcupa = qtdeUso / memoria.tamanhoBloco();
-                
-                var data = memoria.data.data;
-                var blocoFinal;
-                
-                var blocosOcupados = [];
-                var diferenca = 0;
-                blocos.forEach(function(bloco) {
-                    if (bloco.progress < qtoOcupa) {
-                        diferenca = bloco.progress + qtoOcupa;
-                        if (diferenca > 1) {
-                            var restoProgress = 1 - bloco.progress;
-                            bloco.progress += restoProgress;
-                            processo.blocos.push({bloco: bloco, ocupa: restoProgress, uso: qtdeUso});
-                            blocosOcupados.push(bloco);
-                        }
+            try{
+                var bloco = buscarBloco(qtdeUso);
+                if (bloco) {
+                    var tam = bloco[0].getAttribute('lastWidth');
+                    var pctDeUso = qtdeUso * (830/MMU.totalLinha);
+                    if (pctDeUso < tam) {
+                        bloco = MMU.divideBloco(processo, bloco, qtdeUso);
                     }
-                })
-
-                memoria.avisarConsumo($rootScope, bloco);
+                }
+                MMU.proximaMemoria(processo, qtdeUso, aleatoria, bloco);
             } catch (e) {
-                logger.error(NAME, "OutOfMemoryException - Memoria livre: " + memoria.memoriaLivre().toFixed(2) + " bytes");
+                logger.memoryError(NAME, e);
+                service.abortarProcesso(processo);
             }
 
         }
+
+        function buscarBloco(tamanho) {
+            tamanho *= (830/MMU.totalLinha);
+            var ultimoBloco;
+            for (var i = 0; i < 100; i+= 10) {
+                for (var j = 0; j < service.blocos['c'+i].length; j++) {
+                    var blocos = service.blocos['c'+i];
+                    for (var k = 0; k < blocos.length; k++) {
+                        if (blocos[k].processo) continue;
+                        var tam = blocos[k][0].getAttribute('lastWidth');
+                        if (tam >= tamanho) {
+                            ultimoBloco = blocos[k];
+                            break;
+                        }
+                    }
+                }
+            }
+            return ultimoBloco;
+        }
+
         return self;
     }
 })();

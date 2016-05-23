@@ -9,7 +9,7 @@ function CommonService(injector) {
 
             construirMemoria: function() {
                 var memory;
-                switch ($(this)[0].config.memoria.id) {
+                switch ($(this)[0].config.memoria.algoritmo.id) {
                     case '1':
                         memory = injector.get('BestFit');
                         break;
@@ -41,24 +41,6 @@ function CommonService(injector) {
             },
             decreaseProcessorUsage: function (processador) {
                 $(this)[0].config.processadorPrincipal.usage[5] -= 1;
-            },
-            stateClass: function (row, type) {
-                var clazz = '';
-                switch (row.state) {
-                    case 'Aguardando':
-                        clazz = 'warning';
-                        break;
-                    case 'Executando':
-                        clazz = 'info active';
-                        break;
-                    case 'Abortado':
-                        clazz = 'danger';
-                        break;
-                    default:
-                        clazz = 'success';
-                }
-
-                return type + "-" + clazz;
             },
 
             config: new Configuration(),

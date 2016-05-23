@@ -37,6 +37,30 @@ function MMU(scope, logger, service, $compile, $timeout) {
         }
     }
 
+    self.divideBloco = function(processo, bloco, consumo) {
+        logger.memoryInfo('MMU', 'Dividindo bloco '+bloco[0].getAttribute('id'));
+        var parent = bloco[0].parentNode;
+        var pct = consumo * (830/self.totalLinha);
+        var pid1 = processo.pid+'-'+1;
+        var bl1 = montarBloco(pid1, pct, processo, consumo);
+        var bl2 = montarBloco(processo.pid+'-'+2, pct, processo, 0);
+        bl1.processo = processo;
+        service.blocos[parent.getAttribute('id')].push(bl1);
+        service.blocos[parent.getAttribute('id')].push(bl2);
+
+        var node = $(bloco[0].getAttribute('id'));
+        bl1 = $compile(bl1)(scope);
+        bl2 = $compile(bl2)(scope);
+        node.after(bl2);
+        node.after(bl1);
+        node.remove();
+        return bl1;
+    }
+
+    function montarBloco(id, porcentagem, processo, consumoBytes) {
+        return '<bloco id="' + id + '" consumo="' + porcentagem + '" tooltip="Processo: P' + processo.pid + '     Consumo: ' + consumoBytes + ' bytes">';
+    }
+
     function buscarMemoria(processo, consumoBytes, aleatoria, bloco) {
         inUse = 1;
         memoria.aumentarConsumo(consumoBytes);
@@ -45,14 +69,14 @@ function MMU(scope, logger, service, $compile, $timeout) {
 
         if (!bloco) {
             var id = processo.pid + (aleatoria ? '-' + processo.blocos.length : '');
-            bloco = $compile('<bloco id="' + id + '"consumo="' + porcentagem + '" tooltip="Processo: P' + processo.pid + '     Consumo: ' + consumoBytes + ' bytes">')(scope);
+            bloco = $compile(montarBloco(id, porcentagem, processo, consumoBytes))(scope);
             bloco[0].setAttribute('lastWidth', porcentagem);
             service.blocos['c' + ultimaLinhaUsada].push(bloco);
             var element = proximoElemento(porcentagem);
             angular.element(element.append(bloco));
         }
 
-        if (aleatoria) logger.memoryInfo('MAIN', 'Processo ' + processo.pid + ' pediu memória: ' + consumoBytes + ' bytes');
+        if (aleatoria) logger.memoryInfo('MMU', 'Processo ' + processo.pid + ' pediu memória: ' + consumoBytes + ' bytes');
 
         bloco.processo = processo;
 
@@ -99,12 +123,6 @@ function MMU(scope, logger, service, $compile, $timeout) {
 
     function rgbToHex(r, g, b) {
         return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-    }
-
-    function sortear(min, max, callback) {
-        var numeros = [1, 5]; //20% de chance
-        var chance = container.random(min, max);
-        (callback && numeros.indexOf(chance) > -1) && callback();
     }
 
     function proximoElemento(porcentagem) {

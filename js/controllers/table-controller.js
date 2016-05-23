@@ -2,7 +2,7 @@
  * Created by Gabriel on 11/03/2016.
  */
 angular.module('so')
-    .controller('TableController', function ($timeout, $rootScope, $scope, $interval, CommonFunctionsService, BestFit) {
+    .controller('TableController', function ($timeout, $rootScope, $scope, $interval, CommonFunctionsService) {
         const ROUND_ROBIN = '1';
         const LTG = '2';
         const INTERVAL = '3';
@@ -89,7 +89,7 @@ angular.module('so')
                 service.aptos = service.aptos;
                 $scope.aptos = cmService.aptos;
                 $timeout(function(){
-                    $scope.config.memoria.algoritmo = BestFit;
+                    $scope.config.memoria.algoritmo = cmService.construirMemoria();
                     service.executar();
                 }, 300);
             } else {

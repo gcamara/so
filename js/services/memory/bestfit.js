@@ -18,6 +18,7 @@
             } catch (e) {
                 logger.memoryError(NAME, e);
                 service.abortarProcesso(processo);
+                logger.memoryError(NAME, 'Processo '+processo.pid+' abortado por falta de memoria');
             }
         }
 
@@ -39,7 +40,6 @@
                     }
                 }
             }
-
             return ultimoBloco;
         }
 

@@ -54,6 +54,8 @@ function Processo(pid, horaExecucao, tempoTotal, active) {
             bloco.style.width = "0";
             objetoBloco.blocoReal.processo = undefined;
             service.config.memoria.diminuirConsumo(objetoBloco.uso);
+            var algoritmo = service.config.memoria.algoritmo;
+            algoritmo.limpeza && algoritmo.limpeza();
         });
     }
 }

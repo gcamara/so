@@ -52,7 +52,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
             bloco = $compile(self.montarBloco(id, porcentagem, processo, consumoBytes))(scope);
             bloco[0].setAttribute('lastWidth', porcentagem);
             service.blocos['c' + ultimaLinhaUsada].push(bloco);
-            var element = proximoElemento(porcentagem);
+            var element = self.proximoElemento(porcentagem);
             angular.element(element.append(bloco));
         }
 
@@ -105,7 +105,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
         return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     }
 
-    function proximoElemento(porcentagem) {
+    self.proximoElemento = function(porcentagem) {
         var celula = '#c' + ultimaLinhaUsada;
         var element = $(celula);
 
@@ -118,9 +118,10 @@ function MMU(scope, logger, service, $compile, $timeout) {
                 ultimaLinhaUsada = 90;
                 throw "OutOfMemoryException - Não há mais blocos livres";
             }
-            return proximoElemento(porcentagem);
+            return self.proximoElemento(porcentagem);
         }
     }
+
 
     return self;
 }

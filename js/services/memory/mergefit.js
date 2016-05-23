@@ -14,20 +14,22 @@
         var memoria = config.memoria;
         self.id = '3';
         var checkMerge;
+        var inUse = 0;
 
         scope.$on('parar', function() {
             $interval.cancel(checkMerge);
             checkMerge = null;
+            inUse = 0;
         });
 
         self.buscarMemoria = function (processo, qtdeUso, aleatoria) {
             logger.memoryInfo(NAME, "[Processo " + processo.pid + "] - Memória solicitada: " + qtdeUso + " bytes");
-            //try{
+            try{
 
                 if (!checkMerge) {
                     logger.memoryInfo(NAME, 'Buscando blocos para mesclar...');
                     checkMerge = $interval(function() {
-                        mergeBlocks();
+                        if (!inUse) mergeBlocks();
                     }, 1000);
                 }
 
@@ -41,11 +43,11 @@
                 }
 
                 MMU.proximaMemoria(processo, qtdeUso, aleatoria, bloco);
-            /*} catch (e) {
+            } catch (e) {
                 logger.memoryError(NAME, e);
                 service.abortarProcesso(processo);
                 console.error(e);
-            }*/
+            }
 
         }
 
@@ -73,10 +75,11 @@
             var parent = bloco[0].parentNode;
             var pct = consumo * (830/MMU.totalLinha);
             var bl2W = bloco[0].getAttribute('lastWidth') - pct;
+            var lastId = bloco[0].getAttribute('id');
 
-            var pid1 = processo.pid+'-'+1;
-            var bl1 = MMU.montarBloco(pid1, pct, processo, consumo);
-            var bl2 = MMU.montarBloco(processo.pid+'-'+2, bl2W, processo, 0);
+            var pid = lastId+'-'+processo.pid+'-';
+            var bl1 = MMU.montarBloco(pid+'1', pct, processo, consumo);
+            var bl2 = MMU.montarBloco(pid+'2', bl2W, processo, 0);
      
             var node = $('#'+bloco[0].getAttribute('id'))[0];
             bl1 = $compile(bl1)(scope);
@@ -88,20 +91,28 @@
             bl1.processo = processo;
 
             var parentId = parent.getAttribute('id');
+
             service.blocos[parentId].push(bl1);
             service.blocos[parentId].push(bl2);
 
             angular.element(parent.insertBefore(bl1[0], node));
             angular.element(parent.insertBefore(bl2[0], node));
-            parent.removeChild(node);
+            node.parentNode.removeChild(node);
 
-            var blocos = service.blocos[parentId];
-            blocos.splice(blocos.indexOf(bloco), 1);
+            for (var i = 0; i < 100; i+=10) {
+                var blocos = service.blocos['c'+i];
+                var indice = blocos.indexOf(bloco);
+                if (indice > -1) {
+                    blocos.splice(indice, 1);
+                    break;
+                }
+            }
 
             return bl1;
         }
 
         function mergeBlocks() {
+            inUse = 1;
             for (var i = 0; i < 100; i+= 10) {
                 var blocos = service.blocos['c'+i]
                 for (var k = 0; k < blocos.length; k++) {
@@ -126,8 +137,9 @@
                                 blocoMerged[0].setAttribute('lastWidth', consumo1+consumo2);
 
                                 angular.element(parent.insertBefore(blocoMerged[0], blocoCorrente[0]));
-                                parent.removeChild($('#'+id)[0]);
-                                parent.removeChild($('#'+id2)[0]);
+                                blocoCorrente[0].parentNode.removeChild(blocoCorrente[0]);
+                                proximoBloco[0].parentNode.removeChild(proximoBloco[0]);
+
 
                                 blocos.splice(k, 0, blocoMerged);
                                 k += 1;
@@ -136,6 +148,7 @@
                     }
                 }
             }
+            inUse = 0;
         }
 
         return self;

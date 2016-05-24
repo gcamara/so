@@ -86,16 +86,17 @@ function Memoria() {
     Memoria.prototype.totalEmBytes = function() {
         return this.total * 1024;
     }
-    Memoria.prototype.aumentarConsumo = function(consumo, processo) {
+    Memoria.prototype.aumentarConsumo = function(consumo, processo, diminui) {
         if (this.totalEmBytes() - this.consumo - consumo < 0) {
             throw "[Processo "+processo.pid+"] - OutOfMemoryException - Memoria livre: " + this.memoriaLivre().toFixed(2) + " bytes";
         } else {
-           this.consumo += consumo;
+            if (diminui) this.consumo -= consumo;
+            else this.consumo += consumo;
         }
     }
 
     Memoria.prototype.diminuirConsumo = function(consumo, processo) {
-        this.aumentarConsumo(consumo*-1, processo);
+        this.aumentarConsumo(consumo, processo, true);
     }
 
     Memoria.prototype.memoriaLivre = function() {

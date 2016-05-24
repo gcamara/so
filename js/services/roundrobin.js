@@ -72,51 +72,52 @@ function RoundRobin($interval, $rootScope, service, logger) {
                         if (apto.chance) {
                             memoria.algoritmo.buscarMemoria(apto, container.random(32, 1024), true);
                         }
+
+                        service.increaseProcessorUsage(processador);
+                        processador.decreaseTime = $interval(function () {
+                            if (!config.running) {
+                                $interval.cancel(processador.decreaseTime);
+                            }
+                            if (processador.tempo && apto.tempo < apto.tempoTotal) {
+                                if (processador.tempo - 1 > 0) {
+                                    processador.tempo -= 1;
+                                } else {
+                                    processador.tempo = 0;
+                                }
+
+                                apto.tempo += 1;
+                                pct = (apto.tempo / apto.tempoTotal) * 100;
+                                apto.progress = Math.floor(pct);
+                            } else {
+                                processador.estado = 'Parado';
+                                logger.procInfo(NAME, 'Processador ' + processador.id + ' parou');
+                                $interval.cancel(processador.decreaseTime);
+                                processador.processo = undefined;
+                                roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
+                                processador.tempo = 0;
+
+                                //Caso ainda haja tempo, volta pra fila de aptos
+                                if (apto.tempo < apto.tempoTotal) {
+                                    apto.state = 'Aguardando';
+                                    roundrobin.aptos[apto.prioridade].push(apto);
+                                } else {
+                                    apto.progress = 100;
+                                    apto.state = 'Concluido';
+                                    apto.limparBlocos(service);
+                                }
+                                service.decreaseProcessorUsage(processador);
+                                $rootScope.$broadcast('BuscarProximo');
+                            }
+                        }, 1000);
                     } catch (e) {
-                        processador.processo = null;
                         $interval.cancel(processador.decreaseTime);
                         processador.processo = undefined;
                         roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
                         processador.tempo = 0;
                         service.decreaseProcessorUsage(processador);
+                        apto.limparBlocos(service);
                         $rootScope.$broadcast('BuscarProximo');
                     }
-                    service.increaseProcessorUsage(processador);
-                    processador.decreaseTime = $interval(function () {
-                        if (!config.running) {
-                            $interval.cancel(processador.decreaseTime);
-                        }
-                        if (processador.tempo && apto.tempo < apto.tempoTotal) {
-                            if (processador.tempo - 1 > 0) {
-                                processador.tempo -= 1;
-                            } else {
-                                processador.tempo = 0;
-                            }
-
-                            apto.tempo += 1;
-                            pct = (apto.tempo / apto.tempoTotal) * 100;
-                            apto.progress = Math.floor(pct);
-                        } else {
-                            processador.estado = 'Parado';
-                            logger.procInfo(NAME, 'Processador ' + processador.id + ' parou');
-                            $interval.cancel(processador.decreaseTime);
-                            processador.processo = undefined;
-                            roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
-                            processador.tempo = 0;
-
-                            //Caso ainda haja tempo, volta pra fila de aptos
-                            if (apto.tempo < apto.tempoTotal) {
-                                apto.state = 'Aguardando';
-                                roundrobin.aptos[apto.prioridade].push(apto);
-                            } else {
-                                apto.progress = 100;
-                                apto.state = 'Concluido';
-                                apto.limparBlocos(service);
-                            }
-                            service.decreaseProcessorUsage(processador);
-                            $rootScope.$broadcast('BuscarProximo');
-                        }
-                    }, 1000);
                 }
             }
         }

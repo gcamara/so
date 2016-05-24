@@ -36,7 +36,7 @@
                 var bloco = buscarBloco(qtdeUso);
                 if (bloco) {
                     var tam = bloco[0].getAttribute('lastWidth');
-                    var pctDeUso = qtdeUso * (830/MMU.totalLinha);
+                    var pctDeUso = qtdeUso * (MMU.getRowWidth()/MMU.totalLinha);
                     if (pctDeUso < parseFloat(tam)) {
                         bloco = divideBloco(processo, bloco, qtdeUso);
                     }
@@ -52,10 +52,10 @@
         }
 
         function buscarBloco(tamanho) {
-            tamanho *= (830/MMU.totalLinha);
+            tamanho *= (MMU.getRowWidth()/MMU.totalLinha);
             var ultimoBloco;
-            for (var i = 0; i < 100; i+= 10) {
-                var blocos = service.blocos['c'+i];
+            for (var indice in service.blocos) {
+                var blocos = service.blocos[indice];
                 for (var j = 0; j < blocos.length; j++) {
                     for (var k = 0; k < blocos.length; k++) {
                         if (blocos[k].processo) continue;
@@ -73,7 +73,7 @@
         function divideBloco(processo, bloco, consumo) {
             logger.memoryInfo(NAME, 'Dividindo bloco '+bloco[0].getAttribute('id'));
             var parent = bloco[0].parentNode;
-            var pct = consumo * (830/MMU.totalLinha);
+            var pct = consumo * (MMU.getRowWidth()/MMU.totalLinha);
             var bl2W = bloco[0].getAttribute('lastWidth') - pct;
             var lastId = bloco[0].getAttribute('id');
 
@@ -99,8 +99,8 @@
             angular.element(parent.insertBefore(bl2[0], node));
             node.parentNode.removeChild(node);
 
-            for (var i = 0; i < 100; i+=10) {
-                var blocos = service.blocos['c'+i];
+            for (var indice in service.blocos) {
+                var blocos = service.blocos[indice];
                 var indice = blocos.indexOf(bloco);
                 if (indice > -1) {
                     blocos.splice(indice, 1);

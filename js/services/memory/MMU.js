@@ -45,7 +45,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
         inUse = 1;
         memoria.aumentarConsumo(consumoBytes);
 
-        var porcentagem = consumoBytes*(830/self.totalLinha);
+        var porcentagem = consumoBytes*(self.getRowWidth()/self.totalLinha);
 
         if (!bloco) {
             var id = processo.pid + (aleatoria ? '-' + processo.blocos.length : '');
@@ -56,7 +56,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
             angular.element(element.append(bloco));
         }
 
-        if (aleatoria) logger.memoryInfo('MMU', 'Processo ' + processo.pid + ' pediu memória: ' + consumoBytes + ' bytes');
+        if (aleatoria) logger.memoryInfo('MMU', '[Processo ' + processo.pid + '] - Solicitou memória durante execução: ' + consumoBytes + ' bytes');
 
         bloco.processo = processo;
 
@@ -79,6 +79,18 @@ function MMU(scope, logger, service, $compile, $timeout) {
         inUse = 0;
 
         return bloco;
+    }
+
+    self.calcularTamanhoBloco = function(bloco) {
+        var tam = parseFloat(bloco[0].getAttribute('lastWidth'));
+        tam /= (self.getRowWidth()/self.totalLinha);
+        return tam;
+    }
+
+    self.getRowWidth = function() {
+        var celula = '#c0';
+        var element = $(celula);
+        return element[0].offsetWidth;
     }
 
     function getAllWidth() {

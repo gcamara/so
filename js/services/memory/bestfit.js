@@ -11,23 +11,23 @@
 
         self.buscarMemoria = function (processo, qtdeUso, aleatoria) {
             logger.memoryInfo(NAME, "[Processo " + processo.pid + "] - Memória solicitada: " + qtdeUso + " bytes");
-            try {
+            //try {
                 var bloco = buscarBloco(qtdeUso);
                 bloco = MMU.proximaMemoria(processo, qtdeUso, aleatoria, bloco);
                 if (bloco) logger.memoryInfo(NAME, "Bloco "+bloco[0].getAttribute('id')+" ocupado pelo processo "+processo.pid);
-            } catch (e) {
+            /*} catch (e) {
                 logger.memoryError(NAME, e);
                 service.abortarProcesso(processo);
-                logger.memoryError(NAME, 'Processo '+processo.pid+' abortado por falta de memoria');
-            }
+                console.error(e);
+            }*/
         }
 
         function buscarBloco(tamanho) {
-            tamanho *= (830/MMU.totalLinha);
+            tamanho *= (MMU.getRowWidth()/MMU.totalLinha);
             var ultimoTamanho = 0;
             var ultimoBloco;
-            for (var i = 0; i < 100; i+= 10) {
-                var blocos = service.blocos['c'+i];
+            for (var indice in service.blocos) {
+                var blocos = service.blocos[indice];
                 for (var j = 0; j < blocos.length; j++) {
                     for (var k = 0; k < blocos.length; k++) {
                         if (blocos[k].processo) continue;

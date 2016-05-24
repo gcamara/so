@@ -43,7 +43,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
 
     function buscarMemoria(processo, consumoBytes, aleatoria, bloco) {
         inUse = 1;
-        memoria.aumentarConsumo(consumoBytes);
+        memoria.aumentarConsumo(consumoBytes, processo);
 
         var porcentagem = consumoBytes*(self.getRowWidth()/self.totalLinha);
 

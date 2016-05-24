@@ -68,8 +68,18 @@ function RoundRobin($interval, $rootScope, service, logger) {
                         $interval.cancel(processador.decreaseTime);
                     }
                     apto.state = 'Executando';
-                    if (apto.chance) {
-                        memoria.algoritmo.buscarMemoria(apto, container.random(32, 1024), true);
+                    try {
+                        if (apto.chance) {
+                            memoria.algoritmo.buscarMemoria(apto, container.random(32, 1024), true);
+                        }
+                    } catch (e) {
+                        processador.processo = null;
+                        $interval.cancel(processador.decreaseTime);
+                        processador.processo = undefined;
+                        roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
+                        processador.tempo = 0;
+                        service.decreaseProcessorUsage(processador);
+                        $rootScope.$broadcast('BuscarProximo');
                     }
                     service.increaseProcessorUsage(processador);
                     processador.decreaseTime = $interval(function () {

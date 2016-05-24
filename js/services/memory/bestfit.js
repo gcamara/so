@@ -11,15 +11,15 @@
 
         self.buscarMemoria = function (processo, qtdeUso, aleatoria) {
             logger.memoryInfo(NAME, "[Processo " + processo.pid + "] - Memória solicitada: " + qtdeUso + " bytes");
-            //try {
+            try {
                 var bloco = buscarBloco(qtdeUso);
                 bloco = MMU.proximaMemoria(processo, qtdeUso, aleatoria, bloco);
                 if (bloco) logger.memoryInfo(NAME, "Bloco "+bloco[0].getAttribute('id')+" ocupado pelo processo "+processo.pid);
-            /*} catch (e) {
+            } catch (e) {
                 logger.memoryError(NAME, e);
                 service.abortarProcesso(processo);
-                console.error(e);
-            }*/
+                throw e;
+            }
         }
 
         function buscarBloco(tamanho) {

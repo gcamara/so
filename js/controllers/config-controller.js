@@ -2,8 +2,8 @@
  * Created by Gabriel on 05/03/2016.
  */
 angular.module('so')
-    .controller('ConfigController', ['$rootScope', '$scope', 'CommonFunctionsService', '$interval', '$injector', 'LogService', ConfigController]);
-function ConfigController($rootScope, $scope, service, $interval, $injector, logger) {
+    .controller('ConfigController', ['$rootScope', '$scope', 'CommonFunctionsService', '$interval', '$injector', 'LogService', '$sce', ConfigController]);
+function ConfigController($rootScope, $scope, service, $interval, $injector, logger, $sce) {
 
     $scope.labels = [1, 2, 3, 4, 5, 6];
     $scope.series = [];
@@ -12,6 +12,9 @@ function ConfigController($rootScope, $scope, service, $interval, $injector, log
     $scope.filtrar = false;
     $scope.search = {msg: ''};
 
+    $scope.htmlTrust = function(value) {
+        return $sce.trustAsHtml(value);
+    }
 
     $scope.config = service.config;
     var memoria = $scope.config.memoria;

@@ -1,7 +1,7 @@
 /**
  * Created by Gabriel on 05/03/2016.
  */
-var so = angular.module('so', ['minhasDiretivas', 'ngAnimate', 'chart.js']);
+var so = angular.module('so', ['ngSanitize', 'minhasDiretivas', 'ngAnimate', 'chart.js']);
 so.config(function(ChartJsProvider) {
    ChartJsProvider.setOptions({
        animationSteps: 15,
@@ -33,6 +33,7 @@ var container = {
 };
 
 function Processo(pid, horaExecucao, tempoTotal, active) {
+    var self = this;
     this.startTime = 0;
     this.endTime = 0;
     this.pid = pid;
@@ -55,7 +56,7 @@ function Processo(pid, horaExecucao, tempoTotal, active) {
             objetoBloco.blocoReal.processo = undefined;
             service.config.memoria.diminuirConsumo(objetoBloco.uso);
             var algoritmo = service.config.memoria.algoritmo;
-            algoritmo.limpeza && algoritmo.limpeza();
+            algoritmo.limpeza && algoritmo.limpeza(objetoBloco.blocoReal, objetoBloco.uso);
         });
     }
 }

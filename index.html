@@ -7,6 +7,7 @@
     <!-- Scripts Importados -->
     <script src="js/angular/angular.min.js"></script>
     <script src="js/angular/angular-animate.min.js"></script>
+    <script src="js/angular/angular-sanitize.min.js"></script>
     <script src="js/jquery/jquery-2.2.1.min.js"></script>
     <script src="js/jquery/jquery-ui.min.js"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
@@ -249,8 +250,8 @@
                             </ul>
                         </div>
                         <console>
-                            <div class="row" ng-repeat="log in config.console.log | filter:search"
-                                 ng-class="{'mensagem-error': log.tipo === 'ERROR'}">{{log.msg}}
+                            <div class="row" ng-bind-html="htmlTrust(log.msg)" ng-repeat="log in config.console.log | filter:search"
+                                 ng-class="{'mensagem-error': log.tipo === 'ERROR'}">
                             </div>
                         </console>
                     </div>

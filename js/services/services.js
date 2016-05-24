@@ -13,6 +13,9 @@ function CommonService(injector) {
                     case '1':
                         memory = injector.get('BestFit');
                         break;
+                    case '2':
+                        memory = injector.get('QuickFit');
+                        break;
                     case '3':
                         memory = injector.get('MergeFit');
                         break;

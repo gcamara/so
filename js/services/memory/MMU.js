@@ -70,7 +70,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
             element.style.background = processo.color;
             element.style.width = porcentagem + 'px';
             processo.blocos.push({bloco: element, uso: consumoBytes, blocoReal: bloco});
-        }, 100, true, bloco);
+        }, 300, true, bloco);
 
         if (fila.length) {
             var attrbs = fila.pop();

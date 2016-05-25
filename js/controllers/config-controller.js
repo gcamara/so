@@ -11,6 +11,8 @@ function ConfigController($rootScope, $scope, service, $interval, $injector, log
     $scope.timer;
     $scope.filtrar = false;
     $scope.search = {msg: ''};
+    $scope.service = service;
+    $scope.processoHighlight;
 
     $scope.htmlTrust = function(value) {
         return $sce.trustAsHtml(value);
@@ -30,6 +32,25 @@ function ConfigController($rootScope, $scope, service, $interval, $injector, log
     };
     $scope.getClass = function(processo, tipo) {
         return tipo+"-"+classes[processo.state];
+    }
+
+    $scope.filtroProcessos = function(processo) {
+        var states = ['Executando', 'Aguardando', 'Pronto'];
+        return states.indexOf(processo.state) > -1;
+    }
+
+    $scope.mouseEntra = function(processo) {
+        service.processoHighlight = processo.pid;
+        $rootScope.$broadcast('processoHighlight', {processo: processo.pid})
+    }
+
+    $scope.mouseSai = function(processo) {
+        service.processoHighlight = -1;
+        $rootScope.$broadcast('processoHighlight', {processo: -1})
+    }
+
+    $scope.verificaProcessoHighlight = function() {
+        return service.processoHighlight >= 0;
     }
     
     logger.sysInfo('Sistema inicializado...');

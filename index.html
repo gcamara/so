@@ -204,6 +204,15 @@
                         Tamanho: {{config.memoria.total}}kB | Consumo: {{(config.memoria.consumo/1024).toFixed(2)}}kB
                         <memoria></memoria>
                     </div>
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <span ng-style="{'background': processo.color}" style="margin-right: 5px; border: 1px solid black; width: 4em; height: 20px; text-align: center; font-color: white" ng-repeat="processo in service.processos | filter: filtroProcessos" ng-mouseover="mouseEntra(processo)" ng-mouseleave="mouseSai()">
+                                P{{processo.pid}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

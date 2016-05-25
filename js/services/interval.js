@@ -167,6 +167,7 @@ function IntervalService($rootScope, service, $interval) {
                 executado  = Math.round(100/executado);
                 console.log("Tempo por segundo: "+executado);
 
+                processador.estado = 'Executando';
                 processador.decreaseTime = $interval(function () {
                     processo.executado += executado;
                     processo.progress = processo.executado;
@@ -179,6 +180,7 @@ function IntervalService($rootScope, service, $interval) {
                         processo.state = 'Concluido';
                         processo.limparBlocos(service);
                         processador.processo = undefined;
+                        processador.estado = 'Parado';
                         $interval.cancel(processador.decreaseTime);
                         service.decreaseProcessorUsage(processador);
                     } 

@@ -158,6 +158,7 @@ function IntervalService($rootScope, service, $interval) {
                 $interval.cancel(processo.countDown);
                 processo.state = 'Executando';
                 $interval.cancel(processador.execFunc);
+                if (processo.chance) this.config.memoria.algoritmo.buscarMemoria(processo, container.random(32, 1024));
                 processo = processador.aptos.shift();
                 processador.processo = processo;
                 service.increaseProcessorUsage(processador);
@@ -166,6 +167,7 @@ function IntervalService($rootScope, service, $interval) {
                 executado  = Math.round(100/executado);
                 console.log("Tempo por segundo: "+executado);
 
+                processador.estado = 'Executando';
                 processador.decreaseTime = $interval(function () {
                     processo.executado += executado;
                     processo.progress = processo.executado;
@@ -178,6 +180,7 @@ function IntervalService($rootScope, service, $interval) {
                         processo.state = 'Concluido';
                         processo.limparBlocos(service);
                         processador.processo = undefined;
+                        processador.estado = 'Parado';
                         $interval.cancel(processador.decreaseTime);
                         service.decreaseProcessorUsage(processador);
                     } 
@@ -208,6 +211,7 @@ function IntervalService($rootScope, service, $interval) {
 
         //pid, horaExecucao, tempoTotal, active
         var processo = new Processo(i, undefined, tempoTotal, active);
+        processo.chance = [1, 3, 5].indexOf(container.random(1, 10)) > -1;
         var memoriaProcesso = container.random(32, 1024);
         processo.startTime = time;
         processo.endTime = timeChanged;

@@ -14,6 +14,10 @@ function MMU(scope, logger, service, $compile, $timeout) {
     
     self.totalLinha = (memoria.totalEmBytes()/10);
 
+    scope.$on('iniciar', function() {
+        service.rowSizes = [0,0,0,0,0,0,0,0,0,0];
+    });
+
     scope.$on('parar', function () {
         ultimaLinhaUsada = 0;
         inUse = 0;
@@ -52,6 +56,7 @@ function MMU(scope, logger, service, $compile, $timeout) {
             bloco = $compile(self.montarBloco(id, porcentagem, processo, consumoBytes))(scope);
             bloco[0].setAttribute('lastWidth', porcentagem);
             service.blocos['c' + ultimaLinhaUsada].push(bloco);
+            service.rowSizes[ultimaLinhaUsada/10] += porcentagem;
             var element = self.proximoElemento(porcentagem);
             angular.element(element.append(bloco));
         }
@@ -59,18 +64,21 @@ function MMU(scope, logger, service, $compile, $timeout) {
         if (aleatoria) logger.memoryInfo('MMU', '[Processo ' + processo.pid + '] - Solicitou memória durante execução: ' + consumoBytes + ' bytes');
 
         bloco.processo = processo;
+        bloco[0].setAttribute('pid', processo.pid);
 
         $timeout(function (bloco) {
             var id = bloco[0].getAttribute('id');
             var element = $('#cp' + id)[0];
             var color = container.random(100, 255);
             if (!processo.color) {
-                processo.color = rgbToHex(color - container.random(20, 100), color - container.random(10, 100), color - container.random(20, 50));
+                //processo.color = rgbToHex(color - container.random(20, 100), color - container.random(10, 100), color - container.random(20, 50));
+                //processo.color = "rgba(12, 12, 255, .5)"
+                processo.color = "#337ab7";
             }
             element.style.background = processo.color;
             element.style.width = porcentagem + 'px';
             processo.blocos.push({bloco: element, uso: consumoBytes, blocoReal: bloco});
-        }, 300, true, bloco);
+        }, 200, true, bloco);
 
         if (fila.length) {
             var attrbs = fila.pop();
@@ -90,20 +98,13 @@ function MMU(scope, logger, service, $compile, $timeout) {
     self.getRowWidth = function() {
         var celula = '#c0';
         var element = $(celula);
-        return element[0].offsetWidth;
+        return element[0].offsetWidth - 5;
     }
 
     function getAllWidth() {
         var w = 0;
-        var indice = 'c' + ultimaLinhaUsada;
         if (ultimaLinhaUsada < 100) {
-            for (var i = 0; i < service.blocos[indice].length; i++) {
-                var el = service.blocos[indice][i][0];
-                if (el) {
-                    var value = el.getAttribute('lastWidth')
-                    if (value) w += parseFloat(value);
-                }
-            }
+            w = service.rowSizes[ultimaLinhaUsada/10];
         }
         return w;
     }
@@ -122,12 +123,12 @@ function MMU(scope, logger, service, $compile, $timeout) {
         var element = $(celula);
 
         var usedWidth = getAllWidth();
-        if (porcentagem + usedWidth < element[0].offsetWidth - 35) {
+        if (porcentagem + usedWidth < self.getRowWidth() - 35) {
             return element;
         } else {
             ultimaLinhaUsada += 10;
             if (ultimaLinhaUsada > 90) {
-                ultimaLinhaUsada = 90;
+                ultimaLinhaUsada = 0;
                 throw "OutOfMemoryException - Não há mais blocos livres";
             }
             return self.proximoElemento(porcentagem);

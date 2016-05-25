@@ -39,6 +39,8 @@ function CommonService(injector) {
                 return service
             },
 
+            processoHighlight: -1,
+
             increaseProcessorUsage: function (processador) {
                 $(this)[0].config.processadorPrincipal.usage[5] += 1;
             },
@@ -62,7 +64,7 @@ function CommonService(injector) {
                 'c80': [],
                 'c90': []
             },
-
+            rowSizes: [0,0,0,0,0,0,0,0,0,0],
             abortarProcesso: function(processo) {
                 var algoritmo = $(this)[0].construirAlgoritmo();
                 algoritmo.abortaProcesso(processo);

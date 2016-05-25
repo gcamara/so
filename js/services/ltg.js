@@ -122,6 +122,7 @@
             processador.processo = processo;
             processo.executado = 0;
             processo.state = 'Executando';
+            processador.estado = 'Executando';
 
             service.increaseProcessorUsage(processador);
             processador.decreaseTime = $interval(function () {
@@ -134,6 +135,7 @@
                         processo.progress = 100;
                         processador.processo = undefined;
                         processo.state = 'Concluido';
+                        processador.estado = 'Parado';
                         processo.limparBlocos(service);
                         this.processadores.splice(processador.id, 0, processador);
                         service.decreaseProcessorUsage(processador);

@@ -123,7 +123,7 @@ function RoundRobin($interval, $rootScope, service, logger) {
                         roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
                         logger.procInfo(NAME, 'Indice do processador: '+roundrobin.availableProcessors.indexOf(currentProcessor));
                         service.decreaseProcessorUsage(processador);
-                        processo.limparBlocos(service);
+                        apto.limparBlocos(service);
                         buscarProximo();
                     }
                 }

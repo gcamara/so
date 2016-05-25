@@ -11,7 +11,6 @@
     <script src="js/jquery/jquery-2.2.1.min.js"></script>
     <script src="js/jquery/jquery-ui.min.js"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
-    <script src="js/dhtmlxgantt.js"></script>
 
     <!-- Scripts Locais -->
     <script src="js/main.js"></script>
@@ -39,7 +38,6 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/angular-chart.min.css">
-    <link rel="stylesheet" href="css/dhtmlxgantt.css">
 
 </head>
 <body ng-controller="ConfigController">
@@ -63,10 +61,12 @@
         <div class="row">
             <div class="col-md-12">
                 <form novalidate name="configuracoes" ng-submit="criarProcessadores()">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">Configurações</div>
-                        <div class="panel-body" style="margin-left: 10px; margin-right: 10px">
-                            <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Sistema</div>
+                        <div class="panel-body">
+                        <h4>Configurações</h4>
+                        <hr/>
+                        <div style="padding: 10px;border: 1px solid rgb(220, 220, 220); border-radius: 4px">
                                 Processador
                                 <hr/>
                                 <div class="row">
@@ -94,10 +94,9 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
                                 <!-- Fim row -->
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="input-group form-group">
                                 <span class="input-group-addon">
                                     <img src="resources/task.png" width="18" height="18">
@@ -114,6 +113,7 @@
                                 </span><input ng-model="config.quantum" class="form-control">
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                                 Memória
                                 <hr/>
@@ -143,13 +143,33 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <button type="submit" target="#config" class="btn btn-primary">
                                     Iniciar
                                 </button>
                                 <a class="btn btn-danger" ng-click="parar()">Parar</a>
+                                </div>
+
+                                        <!-- Corpo de execucao -->
+                            <div class="row">
+                                <div ng-show="config.processadores.length" style="height: 400px; margin-top: 40px">
+                                    <div class="col-md-12">
+                                    <h4>
+                                        Processadores
+                                    </h4>
+                                    <hr />
+                                        <div style="overflow-y: auto; overflow-x: hidden; height: 450px">
+                                            <div ng-repeat="processador in config.processadores">
+                                                <div class="row" ng-if="$index % 3 == 0"></div>
+                                                <processador processador="processador"></processador>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- Inicio do container generico -->
+                            <tabela titulo="Processos"></tabela>
+                            <!-- Fim container generico -->
                         </div>
                         <!-- Fim painel body-->
 
@@ -162,28 +182,6 @@
         </div>
         <!-- Fim Topo -->
 
-        <!-- Corpo de execucao -->
-        <div class="row">
-            <div ng-show="config.processadores.length" style="height: 400px">
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Processadores
-                        </div>
-                        <div class="panel-body processadores">
-                            <div ng-repeat="processador in config.processadores">
-                                <div class="row" ng-if="$index % 3 == 0"></div>
-                                <processador processador="processador"></processador>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Inicio do container generico -->
-        <tabela titulo="Processos"></tabela>
-        <!-- Fim container generico -->
     </div>
     <div id="recursos" class="col-md-6 pesquisa" ng-show="config.processadores.length"
          style="padding-top: 20px; height: 100%">
@@ -205,6 +203,15 @@
                         <memoria></memoria>
                     </div>
                 </div>
+                <h4>Processos</h4>
+                <hr>
+                Passe o mouse para ver os blocos ocupados pelo processo
+                <div class="well well-sm" style="overflow-y: auto; height: 80px">
+                     <!-- ng-style="{'background': processo.color}" -->
+                        <span  style="margin-right: 2px; margin-bottom: 5px" class="btn btn-primary btn-xs" ng-repeat="processo in service.processos | filter: filtroProcessos" ng-mouseover="mouseEntra(processo)" ng-mouseleave="mouseSai()">
+                        P{{processo.pid}}
+                        </span>
+                    </div>
             </div>
         </div>
 

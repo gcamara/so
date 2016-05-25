@@ -150,10 +150,8 @@ so.directive('memoria', DirectiveMemoria);
 function DirectiveMemoria() {
     return {
         restrict: 'E',
+        scope: true,
         templateUrl: 'directives/memoria.html',
-        scope:  {
-            dados: '='
-        }
     }
 };
 
@@ -168,6 +166,15 @@ function DiretivaBloco() {
             tooltip: '@',
             consumo: '=',
             id: '@'
+        },
+        link: function(scope, element, attrs, controller) {
+                scope.$on('processoHighlight', function(event, args){
+                    if (args.processo == element[0].getAttribute('pid')) {
+                        element.addClass('highlight');
+                    } else {
+                        element.removeClass('highlight');
+                    }
+                });
+            }
         }
     }
-}

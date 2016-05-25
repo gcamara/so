@@ -1,82 +1,77 @@
 <div class="animate-show" ng-hide="!config.running">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            Aptos
-            <button id="aptosBtn" style="margin-top: 0px" collapse-button
-                    class="btn btn-default pull-right glyphicon glyphicon-chevron-up btn-xs"
-                    data-toggle="collapse" ng-click="collapseAptos()" data-target="#pbody"></button>
-        </div>
-        <div id="pbody" class="panel-body collapse in">
-            <div class="row">
-                <div ng-show="algorithm() == '2'">
-                    <div class="col-md-12">
-                        <div class="row"
-                             style="overflow-y: auto; overflow-x: hidden; min-height: 20px; max-height: 100px;">
-                            <div class="col-md-2" style="padding-right: -10px"
-                                 ng-repeat="apto in aptos">
-                                <div class="label label-success">P{{apto.pid}}</div>
-                            </div>
+
+<div style="margin-bottom: 40px;">
+        <h4>Aptos
+                <span id="aptosBtn" style="margin-top: 0px; font-size: 10px" collapse-button
+                class="btn btn-default pull-right glyphicon glyphicon-chevron-up btn-xs"
+                data-toggle="collapse" ng-click="collapseAptos()" data-target="#pbody"></span>
+        </h4>
+
+    <hr/>
+    <div id="pbody" class="panel-body collapse in">
+        <div class="row">
+            <div ng-show="algorithm() == '2'">
+                <div class="col-md-12">
+                    <div class="row"
+                         style="overflow-y: auto; overflow-x: hidden; min-height: 20px; max-height: 100px;">
+                        <div class="col-md-2" style="padding-right: -10px"
+                             ng-repeat="apto in aptos">
+                            <div class="label label-success">P{{apto.pid}}</div>
                         </div>
                     </div>
                 </div>
-                <div ng-show="algorithm() == '1'">
-                    <fila-aptos ng-repeat="i in [[],[],[],[]]" titulo="Prioridade {{$index}}"
-                                prioridade="{{$index}}" lista="processos()"
-                                propriedade="processo.prioridade"></fila-aptos>
-                </div>
-                <div ng-show="algorithm() == '3'">
-                    <fila-aptos ng-repeat="processador in config.processadores"
-                                titulo="Processador {{$index}}" lista="processador.aptos"></fila-aptos>
-                </div>
+            </div>
+            <div ng-show="algorithm() == '1'">
+                <fila-aptos ng-repeat="i in [[],[],[],[]]" titulo="Prioridade {{$index}}"
+                            prioridade="{{$index}}" lista="processos()"
+                            propriedade="processo.prioridade"></fila-aptos>
+            </div>
+            <div ng-show="algorithm() == '3'">
+                <fila-aptos ng-repeat="processador in config.processadores"
+                            titulo="Processador {{$index}}" lista="processador.aptos"></fila-aptos>
             </div>
         </div>
     </div>
+</div>
 
     <div ng-show="algorithm() == '3'">
-        <div class="panel panel-danger">
-            <div class="panel-heading">Processos restantes</div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-1 label label-danger" ng-repeat="processo in remainder()" style="margin:10px;">
-                        P{{processo.pid}} &nbsp;
-                    </div>
-                </div>
+        <h4>Processos restantes</h4>
+        <hr/>
+        <div class="row">
+            <div class="col-md-1 label label-danger" ng-repeat="processo in remainder()" style="margin:10px;">
+                P{{processo.pid}} &nbsp;
             </div>
         </div>
     </div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading" >
-            {{titulo}}
-            <span class="pull-right label label-info" style="font-size: 1em">Hora do Sistema: {{horaSistema()}}</span>
-        </div>
-        <div class="panel-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th ng-repeat="header in cmService.headers">{{header}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="row in processos()" ng-class="{ 'active':row.active }">
-                    <td>{{row.pid}}</td>
-                    <td>{{row.processo}}</td>
-                    <td>
-                        <progress-process row="row"></progress-process>
-                    </td>
-                    <td>
-                        <div style="margin-top: -5px">
-                            <span class="label" ng-class="getClass(row, 'label')">{{row.state}}</span>
-                        </div>
-                    </td>
-                    <td>{{checkColumn4(row)}}</td>
-                    <td>{{row.tempo === 0 ? row.tempoTotal : tempoLinha(row)}}s</td>
-                </tr>
-                </tbody>
-            </table>
-            <hr/>
-            <a class="btn btn-primary" style="margin-top: -10px; margin-right: 0px" ng-click="addProccess(true)">Adicionar</a>
-        </div>
-
-    </div>
+    <h4>
+        {{titulo}}
+        <span class="pull-right label label-info" style="font-size: 10px">Hora do Sistema: {{horaSistema()}}</span>
+    </h4>
+    <hr/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th ng-repeat="header in cmService.headers">{{header}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in processos()" ng-class="{ 'active':row.active }">
+            <td>{{row.pid}}</td>
+            <td>{{row.processo}}</td>
+            <td>
+                <progress-process row="row"></progress-process>
+            </td>
+            <td>
+                <div style="margin-top: -5px">
+                    <span class="label" ng-class="getClass(row, 'label')">{{row.state}}</span>
+                </div>
+            </td>
+            <td>{{checkColumn4(row)}}</td>
+            <td>{{row.tempo === 0 ? row.tempoTotal : tempoLinha(row)}}s</td>
+        </tr>
+        </tbody>
+    </table>
+    <hr/>
+    <a class="btn btn-primary" style="margin-top: -10px; margin-right: 0px" ng-click="addProccess(true)">Adicionar</a>
 </div>

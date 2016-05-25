@@ -221,7 +221,9 @@ function IntervalService($rootScope, service, $interval) {
     interval.abortaProcesso = function(processo) {
         var remainder = interval.remainder;
         remainder.splice(remainder.indexOf(processo), 1);
+        processo.limparBlocos(service);
     }
+
 
     interval.countDown = function (processo) {
         var countTimer = $interval(function () {
@@ -245,6 +247,7 @@ function IntervalService($rootScope, service, $interval) {
                         proc.aptos.splice(index, 1);
                     }
                 });
+                processo.limparBlocos(service);
                 processo = undefined;
                 $interval.cancel(countTimer);
             } else {

@@ -13,6 +13,10 @@ function RoundRobin($interval, $rootScope, service, logger) {
     var ultimaFila = 0;
     var memoria = service.config.memoria;
 
+    $rootScope.$on('iniciar', function() {
+        verificarExecucao();
+    })
+
     /**
      * Busca o proximo apto
      * @returns {*}
@@ -78,6 +82,7 @@ function RoundRobin($interval, $rootScope, service, logger) {
                             if (!config.running) {
                                 $interval.cancel(processador.decreaseTime);
                             }
+                            var apto = processador.processo;
                             if (processador.tempo && apto.tempo < apto.tempoTotal) {
                                 if (processador.tempo - 1 > 0) {
                                     processador.tempo -= 1;
@@ -106,44 +111,56 @@ function RoundRobin($interval, $rootScope, service, logger) {
                                     apto.limparBlocos(service);
                                 }
                                 service.decreaseProcessorUsage(processador);
-                                $rootScope.$broadcast('BuscarProximo');
+                                buscarProximo();
                             }
                         }, 1000);
                     } catch (e) {
-                        $interval.cancel(processador.decreaseTime);
+                        apto.state = 'Abortado';
+                        processador.estado = 'Parado';
                         processador.processo = undefined;
-                        roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
                         processador.tempo = 0;
+                        logger.procInfo(NAME, 'Retornando processador '+currentProcessor.id);
+                        roundrobin.availableProcessors.splice(currentProcessor.id, 0, currentProcessor);
+                        logger.procInfo(NAME, 'Indice do processador: '+roundrobin.availableProcessors.indexOf(currentProcessor));
                         service.decreaseProcessorUsage(processador);
-                        apto.limparBlocos(service);
-                        $rootScope.$broadcast('BuscarProximo');
+                        processo.limparBlocos(service);
+                        buscarProximo();
                     }
                 }
             }
         }
     };
 
-    roundrobin.abortaProcesso = function (processo, execFunction, aptos) {
+    var verificarExecucao = function() {
+        var verificaProcesso = $interval(function() {
+            if (roundrobin.config.running) execFunction(roundrobin.config);
+            else $interval.cancel(verificaProcesso);
+        }, 1000);
+    };
+
+    roundrobin.abortaProcesso = function (processo) {
         logger.procError(NAME, 'Abortando processo ' + processo.pid);
         processo.state = 'Abortado';
-        $interval.cancel(execFunction)
+        logger.sysInfo('Acessou o abortar processo para processo '+processo.pid);
         for (var i = 0; i < 4; i++) {
             var listaAptos = roundrobin.aptos[i];
             var index = listaAptos.indexOf(processo);
             if (index > -1) {
+                logger.sysInfo('Encontrou o processo na fila '+i+' indice '+index);
                 listaAptos.splice(index, 1);
                 break;
             }
         };
         processo.limparBlocos(service);
         logger.memoryInfo(NAME, 'Limpando blocos do processo ' + processo.pid);
+        buscarProximo();
     }
 
-    $rootScope.$on('BuscarProximo', function () {
+    var buscarProximo = function() {
         if (roundrobin.config.running) {
             execFunction(roundrobin.config);
         }
-    });
+    };
 
     /**
      * Configura o servico
@@ -165,7 +182,7 @@ function RoundRobin($interval, $rootScope, service, logger) {
     roundrobin.executar = function () {
         roundrobin.criaProcessos();
         roundrobin.config.processadores.forEach(function () {
-            $rootScope.$broadcast('BuscarProximo');
+            buscarProximo();
         });
     };
 
@@ -200,7 +217,7 @@ function RoundRobin($interval, $rootScope, service, logger) {
         //Verificar memória
         var memoriaProcesso = container.random(32, 1024);
         this.config.memoria.algoritmo.buscarMemoria(proc, memoriaProcesso);
-        $rootScope.$broadcast('BuscarProximo', {'apto': proc});
+        buscarProximo();
     };
 
     return roundrobin;

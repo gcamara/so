@@ -14,6 +14,10 @@ function MMU(scope, logger, service, $compile, $timeout) {
     
     self.totalLinha = (memoria.totalEmBytes()/10);
 
+    scope.$on('iniciar', function() {
+        service.rowSizes = [0,0,0,0,0,0,0,0,0,0];
+    });
+
     scope.$on('parar', function () {
         ultimaLinhaUsada = 0;
         inUse = 0;

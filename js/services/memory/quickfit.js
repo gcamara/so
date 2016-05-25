@@ -24,16 +24,22 @@
 
         self.buscarMemoria = function (processo, qtdeUso, aleatoria) {
             logger.memoryInfo(NAME, "[Processo " + processo.pid + "] - Memória solicitada: " + qtdeUso + " bytes");
-            requisicoes++;
-            if (requisicoes == 20) {
-                logger.memoryInfo(NAME, 'Criando filas');
-                self.criarFilas();
-                requisicoes = 0;
+            try {
+                requisicoes++;
+                if (requisicoes == 20) {
+                    logger.memoryInfo(NAME, 'Criando filas');
+                    self.criarFilas();
+                    requisicoes = 0;
+                }
+                verificarEAtribuir(qtdeUso);
+                var pctDeUso = qtdeUso * (MMU.getRowWidth()/MMU.totalLinha);
+                var bloco = buscarBloco(qtdeUso, pctDeUso, processo);
+                bloco = MMU.proximaMemoria(processo, qtdeUso, aleatoria, bloco);
+            } catch (e) {
+                logger.memoryError(NAME, e);
+                service.abortarProcesso(processo);
+                throw e;
             }
-            verificarEAtribuir(qtdeUso);
-            var pctDeUso = qtdeUso * (MMU.getRowWidth()/MMU.totalLinha);
-            var bloco = buscarBloco(qtdeUso, pctDeUso, processo);
-            bloco = MMU.proximaMemoria(processo, qtdeUso, aleatoria, bloco);
         }
 
         self.limpeza = function(bloco, uso) {

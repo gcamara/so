@@ -46,7 +46,7 @@
             } catch (e) {
                 logger.memoryError(NAME, e);
                 service.abortarProcesso(processo);
-                console.error(e);
+                throw e;
             }
 
         }

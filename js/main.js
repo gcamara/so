@@ -54,7 +54,7 @@ function Processo(pid, horaExecucao, tempoTotal, active) {
             var bloco = objetoBloco.bloco;
             bloco.style.width = "0";
             objetoBloco.blocoReal.processo = undefined;
-            service.config.memoria.diminuirConsumo(objetoBloco.uso);
+            service.config.memoria.diminuirConsumo(objetoBloco.uso, self);
             var algoritmo = service.config.memoria.algoritmo;
             algoritmo.limpeza && algoritmo.limpeza(objetoBloco.blocoReal, objetoBloco.uso);
         });
@@ -86,16 +86,17 @@ function Memoria() {
     Memoria.prototype.totalEmBytes = function() {
         return this.total * 1024;
     }
-    Memoria.prototype.aumentarConsumo = function(consumo) {
+    Memoria.prototype.aumentarConsumo = function(consumo, processo, diminui) {
         if (this.totalEmBytes() - this.consumo - consumo < 0) {
-            throw "OutOfMemoryException - Memoria livre: " + this.memoriaLivre().toFixed(2) + " bytes";
+            throw "[Processo "+processo.pid+"] - OutOfMemoryException - Memoria livre: " + this.memoriaLivre().toFixed(2) + " bytes";
         } else {
-           this.consumo += consumo;
+            if (diminui) this.consumo -= consumo;
+            else this.consumo += consumo;
         }
     }
 
-    Memoria.prototype.diminuirConsumo = function(consumo) {
-        this.aumentarConsumo(consumo*-1);
+    Memoria.prototype.diminuirConsumo = function(consumo, processo) {
+        this.aumentarConsumo(consumo, processo, true);
     }
 
     Memoria.prototype.memoriaLivre = function() {

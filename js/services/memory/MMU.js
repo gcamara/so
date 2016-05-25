@@ -68,7 +68,8 @@ function MMU(scope, logger, service, $compile, $timeout) {
             var color = container.random(100, 255);
             if (!processo.color) {
                 //processo.color = rgbToHex(color - container.random(20, 100), color - container.random(10, 100), color - container.random(20, 50));
-                processo.color = "rgba(12, 12, 255, .5)"
+                //processo.color = "rgba(12, 12, 255, .5)"
+                processo.color = "#337ab7";
             }
             element.style.background = processo.color;
             element.style.width = porcentagem + 'px';
